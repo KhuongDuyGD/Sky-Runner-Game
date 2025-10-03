@@ -1,0 +1,2741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sky Runner - Arcade Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        #gameContainer {
+            position: relative;
+            max-width: 1800px;
+            width: 98%;
+            background: #1a1a2e;
+            border-radius: 20px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            border: 10px solid #2d2d44;
+            box-sizing: border-box;
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%);
+            cursor: pointer;
+            border: 6px solid rgba(255, 215, 0, 0.3);
+            box-sizing: border-box;
+        }
+
+        /* Menu Overlay */
+        .menu-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            animation: fadeIn 0.5s ease-in;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .menu-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px 60px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            border: 3px solid #FFD700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .menu-overlay h1 {
+            color: #FFD700;
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 3px 3px 6px rgba(0, 0, 0, 0.8);
+            animation: pulse 2s infinite, glow 2s infinite alternate;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 5px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 3px 3px 6px rgba(0, 0, 0, 0.8); }
+            100% { text-shadow: 0 0 40px rgba(255, 215, 0, 1), 0 0 60px rgba(255, 215, 0, 0.6), 3px 3px 6px rgba(0, 0, 0, 0.8); }
+        }
+
+        .menu-subtitle {
+            color: #4ECDC4;
+            font-size: 1.3rem;
+            margin: 10px 0 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .menu-description {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            margin-bottom: 25px;
+            max-width: 600px;
+        }
+
+        .menu-overlay p {
+            color: #fff;
+            font-size: 1.2rem;
+            margin: 5px 0;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .controls-text {
+            font-size: 1rem;
+            color: #4ECDC4;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .menu-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .menu-features span {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .menu-buttons-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-play {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            border-color: #38ef7d;
+            color: white;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(56, 239, 125, 0.6);
+            border-color: #FFD700;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-color: #f5576c;
+            color: white;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.6);
+            border-color: #FFD700;
+        }
+
+        .btn-exit {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-color: #00f2fe;
+            color: white;
+        }
+
+        .btn-exit:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.6);
+            border-color: #FFD700;
+        }
+
+        .btn-version {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-color: #a8edea;
+            color: #333;
+            font-size: 1rem;
+            padding: 12px 30px;
+        }
+
+        .btn-version:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(168, 237, 234, 0.6);
+            border-color: #fed6e3;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Score Display */
+        #scoreDisplay {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            color: #fff;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            z-index: 5;
+        }
+
+        #highScoreDisplay {
+            position: absolute;
+            top: 85px;
+            right: 30px;
+            color: #FFD700;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            z-index: 5;
+        }
+
+        /* Game Info Display */
+        #gameInfo {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 3px solid rgba(135, 206, 235, 0.5);
+            z-index: 5;
+        }
+
+        /* Pause Menu */
+        #pauseMenu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 40px 60px;
+            border-radius: 20px;
+            border: 4px solid #FFD700;
+            text-align: center;
+            z-index: 15;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+        }
+
+        #pauseMenu h2 {
+            color: #FFD700;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        #pauseMenu p {
+            color: #fff;
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .pause-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-menu {
+            background: linear-gradient(135deg, #FFA500 0%, #FF8C00 100%);
+            border-color: #FFA500;
+            color: white;
+        }
+
+        .btn-menu:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 165, 0, 0.6);
+            border-color: #FFD700;
+        }
+
+        /* Restart Notification */
+        #restartNotification {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: 3px solid;
+            text-align: center;
+            z-index: 25;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+            min-width: 300px;
+        }
+
+        /* Style Switcher */
+        #styleSwitcher {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 20;
+        }
+
+        #styleBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: 3px solid #FFD700;
+            padding: 12px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        #styleBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        }
+
+        #styleMenu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #FFD700;
+            border-radius: 15px;
+            padding: 15px;
+            min-width: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+        
+        #styleMenu::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #styleMenu::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        #styleMenu::-webkit-scrollbar-thumb {
+            background: #FFD700;
+            border-radius: 10px;
+        }
+        
+        #styleMenu::-webkit-scrollbar-thumb:hover {
+            background: #FFA500;
+        }
+
+        .style-option {
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .style-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #FFD700;
+            transform: translateX(-5px);
+        }
+
+        .style-option.active {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #000;
+        }
+
+        /* Combo Display */
+        #comboDisplay {
+            position: absolute;
+            top: 150px;
+            right: 30px;
+            color: #FF6B6B;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+            background: rgba(255, 107, 107, 0.3);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 3px solid #FF6B6B;
+            z-index: 5;
+            display: none;
+            animation: comboShake 0.5s infinite;
+        }
+
+        @keyframes comboShake {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        /* Weather Notification */
+        #weatherNotification {
+            position: absolute;
+            top: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: 3px solid;
+            text-align: center;
+            z-index: 11;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+            min-width: 280px;
+        }
+
+        /* Event Notification */
+        #eventNotification {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            padding: 15px 30px;
+            border-radius: 12px;
+            border: 3px solid;
+            text-align: center;
+            z-index: 12;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+            min-width: 300px;
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .event-timer {
+            font-size: 0.9rem;
+            margin-top: 5px;
+            color: #FFD700;
+            font-weight: normal;
+        }
+
+        .event-warning {
+            font-size: 0.85rem;
+            margin-top: 3px;
+            color: #FF6B6B;
+            font-weight: bold;
+            animation: warningPulse 0.5s infinite;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Version Modal */
+        #versionModal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(10, 10, 30, 0.98) 0%, rgba(20, 20, 40, 0.98) 100%);
+            padding: 30px;
+            border-radius: 25px;
+            border: 4px solid #FFD700;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            z-index: 20;
+            box-shadow: 0 25px 70px rgba(255, 215, 0, 0.5);
+        }
+
+        #versionModal h2 {
+            color: #FFD700;
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+            font-weight: 900;
+        }
+
+        .version-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 18px;
+            border-left: 6px solid #4ECDC4;
+            border-right: 2px solid rgba(78, 205, 196, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .version-section:hover {
+            transform: translateX(5px);
+            box-shadow: 0 12px 30px rgba(78, 205, 196, 0.4);
+        }
+
+        .version-section h3 {
+            color: #4ECDC4;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .version-badge {
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .version-section ul {
+            color: #E0E0E0;
+            margin-left: 25px;
+            line-height: 2;
+            font-size: 1.05rem;
+        }
+
+        .version-section li {
+            margin: 8px 0;
+            position: relative;
+            padding-left: 10px;
+        }
+
+        .version-section li::before {
+            content: '▸';
+            position: absolute;
+            left: -15px;
+            color: #4ECDC4;
+            font-weight: bold;
+        }
+
+        .close-version {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            color: white;
+            border: 3px solid #FF6B6B;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .close-version:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+        }
+
+        /* Double Jump Counter */
+        #doubleJumpCounter {
+            position: absolute;
+            top: 150px;
+            left: 30px;
+            color: #4ECDC4;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px 25px;
+            border-radius: 15px;
+            border: 3px solid rgba(78, 205, 196, 0.5);
+            z-index: 5;
+        }
+
+        .cooldown {
+            color: #FF6B6B !important;
+            border-color: rgba(255, 107, 107, 0.5) !important;
+            animation: cooldownPulse 1s infinite;
+        }
+
+        @keyframes cooldownPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-overlay h1 {
+                font-size: 2rem;
+            }
+            .menu-overlay p {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="2400" height="1000"></canvas>
+        
+        <!-- Score Display -->
+        <div id="scoreDisplay">Score: 0</div>
+        <div id="highScoreDisplay">High Score: 0</div>
+        <div id="comboDisplay">COMBO x0</div>
+        <div id="doubleJumpCounter">🦘 Double Jumps: 5/5</div>
+        <div id="gameInfo">🎮 SKY RUNNER v7.2<br>SPACE: Jump | ESC: Pause | R: Reset</div>
+        
+        <!-- Weather Notification -->
+        <div id="weatherNotification"></div>
+        
+        <!-- Event Notification -->
+        <div id="eventNotification"></div>
+        
+        <!-- Restart Notification -->
+        <div id="restartNotification"></div>
+        
+        <!-- Pause Menu -->
+        <div id="pauseMenu" class="hidden">
+            <h2>⏸️ PAUSED ⏸️</h2>
+            <p>Press SPACE or Click to Continue</p>
+            <p>Press ESC to Resume</p>
+            <div class="pause-buttons">
+                <button class="btn btn-restart" id="pauseRestartBtn"><span>🔄 Restart Game</span></button>
+                <button class="btn btn-menu" id="pauseMenuBtn"><span>🏠 Main Menu</span></button>
+            </div>
+        </div>
+        
+        <!-- Style Switcher -->
+        <div id="styleSwitcher">
+            <button id="styleBtn">🎨 Styles</button>
+            <div id="styleMenu" class="hidden">
+                <div class="style-option active" data-style="normal">✨ Normal</div>
+                <div class="style-option" data-style="cyberpunk">🌆 Cyberpunk</div>
+                <div class="style-option" data-style="steampunk">⚙️ Steampunk</div>
+                <div class="style-option" data-style="medieval">⚔️ Medieval</div>
+                <div class="style-option" data-style="rainbow">🌈 Rainbow</div>
+                <div class="style-option" data-style="dark">🌙 Dark</div>
+                <div class="style-option" data-style="easter">🥚 Easter Egg</div>
+                <div class="style-option" data-style="glitch">⚡ The Glitch</div>
+                <div class="style-option" data-style="horror">👻 Horror</div>
+                <div class="style-option" data-style="eco">🌿 Eco-Friendly</div>
+                <div class="style-option" data-style="fantasy">✨ Fantasy</div>
+                <div class="style-option" data-style="basic">📦 Basic</div>
+            </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="mainMenu" class="menu-overlay">
+            <div class="menu-header">
+                <h1>🎮 SKY RUNNER 🎮</h1>
+                <div class="menu-subtitle">✨ Ultimate Edition ✨</div>
+            </div>
+            <div class="menu-description">
+                <p style="color: #FFD700; font-size: 1.4rem; margin-bottom: 15px; text-align: center;">🏆 Jump, Survive, Conquer! 🏆</p>
+                <div class="menu-features">
+                    <span>⚡ Double Jump System</span>
+                    <span>🎨 12 Unique Styles</span>
+                    <span>🎉 Surprise Events</span>
+                    <span>🌦️ Dynamic Weather</span>
+                    <span>🏅 Combo System</span>
+                </div>
+                <p class="controls-text">Controls: SPACE/Click = Jump | ESC = Pause | R = Restart</p>
+            </div>
+            <div class="menu-buttons">
+                <div class="menu-buttons-row">
+                    <button class="btn btn-play" id="playBtn"><span>▶️ Play Game</span></button>
+                    <button class="btn btn-exit" id="exitBtn"><span>🚪 Exit</span></button>
+                </div>
+                <button class="btn btn-version" id="versionBtn"><span>📋 Version History</span></button>
+            </div>
+        </div>
+
+        <!-- Version Modal -->
+        <div id="versionModal" class="hidden">
+            <h2>📜 Version History</h2>
+            
+            <div class="version-section">
+                <h3>🚀 Version 7.2 - "Polish & Expansion" <span class="version-badge">CURRENT</span></h3>
+                <ul>
+                    <li>⏰ Extended weather duration from 15s to 20s for even longer immersion</li>
+                    <li>📺 Expanded canvas to 2400x1000 pixels (100px taller for more vertical space)</li>
+                    <li>✨ Fixed "Ultimate Edition" subtitle formatting with better spacing and line height</li>
+                    <li>🎨 Improved menu visual hierarchy and readability</li>
+                </ul>
+            </div>
+            
+            <div class="version-section">
+                <h3>🚀 Version 7.1 - "Extended Experience"</h3>
+                <ul>
+                    <li>⏰ Extended weather duration from 10s to 15s for better immersion</li>
+                    <li>🎨 Weather now changes based on current style theme (e.g., Horror gets storms, Fantasy gets snow)</li>
+                    <li>📜 Added scrollable style theme menu with custom scrollbar</li>
+                    <li>📺 Expanded game screen to 2400x900 pixels for bigger play area</li>
+                    <li>🦘 Increased jump distance for smoother gameplay (jumpPower: -18 → -20)</li>
+                </ul>
+            </div>
+            
+            <div class="version-section">
+                <h3>🚀 Version 7.0 - "Weather & Fantasy"</h3>
+                <ul>
+                    <li>🐛 Fixed Giant/Tiny mode bugs - improved size transitions and collision detection</li>
+                    <li>🌦️ Added dynamic weather system with 5 weather types (sunny, rainy, snowy, windy, stormy)</li>
+                    <li>☁️ Enhanced cloud system with more clouds and theme-specific flying objects</li>
+                    <li>✨ Added "Fantasy" theme with magical purple/pink aesthetics</li>
+                    <li>🎨 Now featuring 12 unique visual styles total</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🚀 Version 6.2 - "Freeze Fix"</h3>
+                <ul>
+                    <li>🐛 Fixed freeze mode bug where new obstacles weren't frozen</li>
+                    <li>❄️ New obstacles now properly inherit frozen state during freeze events</li>
+                    <li>✨ Improved freeze event consistency</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🚀 Version 6.1 - "Bug Fixes & Warnings"</h3>
+                <ul>
+                    <li>🐛 Fixed event notification persisting after game over</li>
+                    <li>🔧 Fixed restart notification showing incorrectly on game start</li>
+                    <li>🎯 Repositioned restart notification to top-center (matches event style)</li>
+                    <li>⚠️ Added 2-3 second warning for Giant Mode and Tiny Mode events</li>
+                    <li>✨ Improved notification system consistency</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🚀 Version 6.0 - "Enhanced Experience"</h3>
+                <ul>
+                    <li>⏰ RNG event timing system with countdown timer display</li>
+                    <li>🎯 Repositioned event notifications to top-center for better visibility</li>
+                    <li>🛠️ Fixed UI flickering issues with player and obstacles during gameplay</li>
+                    <li>📋 Redesigned version history with modern, user-friendly interface</li>
+                    <li>🎨 Added "Horror" theme with spooky dark aesthetics</li>
+                    <li>🌿 Added "Eco-Friendly" theme with natural green colors</li>
+                    <li>📊 Now featuring 11 unique visual styles total</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🛠️ Version 5.2 - "Polish & Fixes"</h3>
+                <ul>
+                    <li>Fixed obstacle speed bug - new obstacles inherit event speed changes</li>
+                    <li>Fixed event persistence bug - events reset properly on game over</li>
+                    <li>Added "Main Menu" button to pause screen</li>
+                    <li>Added restart notifications with success/failure feedback</li>
+                    <li>Centered "Ultimate Edition" subtitle text</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>⚔️ Version 5.1 - "Medieval Mayhem"</h3>
+                <ul>
+                    <li>Added "Medieval" style theme with castle aesthetics</li>
+                    <li>Expanded surprise events system (8 total events)</li>
+                    <li>New events: Giant Mode, Tiny Mode, Freeze Obstacles, Rainbow Trail</li>
+                    <li>Improved main menu text formatting and colors</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>⚡ Version 5.0 - "The Glitch Update"</h3>
+                <ul>
+                    <li>Added "The Glitch" style theme with corrupted effects</li>
+                    <li>Double Jump system with 5 charges and 10s cooldown</li>
+                    <li>Enhanced main menu with modern UI/UX design</li>
+                    <li>Version history display system</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🎭 Version 4.0 - "Style Revolution"</h3>
+                <ul>
+                    <li>7 unique visual styles introduced</li>
+                    <li>Pause/Resume system (ESC key)</li>
+                    <li>Quick restart with R key</li>
+                    <li>Surprise event system (4 initial events)</li>
+                    <li>Combo tracking system</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>📺 Version 3.0 - "Big Screen Expansion"</h3>
+                <ul>
+                    <li>Expanded canvas to 2000x800 pixels</li>
+                    <li>Decorative game border with corner ornaments</li>
+                    <li>Enhanced jump mechanics - farther jump distance</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>✨ Version 2.0 - "Smooth Operator"</h3>
+                <ul>
+                    <li>Advanced particle system for all actions</li>
+                    <li>Squash & stretch animations</li>
+                    <li>Reduced difficulty for better gameplay</li>
+                    <li>Forgiving hitbox collision detection</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🎮 Version 1.0 - "Genesis"</h3>
+                <ul>
+                    <li>Initial game release</li>
+                    <li>Playable character with jump mechanics</li>
+                    <li>Dynamic obstacle spawning</li>
+                    <li>Scoring system with high score tracking</li>
+                </ul>
+            </div>
+
+            <button class="close-version" id="closeVersionBtn">Close</button>
+        </div>
+
+        <!-- Game Over Menu -->
+        <div id="gameOverMenu" class="menu-overlay hidden">
+            <h1>GAME OVER!</h1>
+            <p id="finalScore">Your Score: 0</p>
+            <div class="menu-buttons">
+                <button class="btn btn-restart" id="restartBtn">Restart</button>
+                <button class="btn btn-exit" id="exitBtn2">Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // GAME CONFIGURATION
+        // ==========================================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game State Management
+        const GameState = {
+            MENU: 'menu',
+            PLAYING: 'playing',
+            PAUSED: 'paused',
+            GAME_OVER: 'gameOver'
+        };
+
+        let currentState = GameState.MENU;
+        let score = 0;
+        let highScore = localStorage.getItem('highScore') || 0;
+        let gameSpeed = 4; // Reduced from 5
+        let frameCount = 0;
+        let combo = 0;
+        let maxCombo = 0;
+        
+        // Particle system for effects
+        let particles = [];
+        
+        // Surprise events
+        let eventTimer = 0;
+        let activeEvent = null;
+        let nextEventTime = 0;
+        let eventIntervalMin = 600; // 10 seconds minimum
+        let eventIntervalMax = 1200; // 20 seconds maximum
+        let upcomingEventType = null;
+        let eventWarningShown = false;
+        
+        // Game style theme
+        let currentStyle = 'normal';
+        
+        // Double Jump System
+        let doubleJumpCharges = 5;
+        let maxDoubleJumpCharges = 5;
+        let doubleJumpCooldown = 0;
+        let doubleJumpCooldownMax = 600; // 10 seconds at 60fps
+        let canDoubleJump = false;
+        
+        // Weather System
+        let weatherTimer = 0;
+        let activeWeather = null;
+        let nextWeatherTime = 0;
+        let weatherIntervalMin = 900; // 15 seconds minimum
+        let weatherIntervalMax = 1800; // 30 seconds maximum
+        let weatherParticles = [];
+        let weatherDuration = 1200; // Increased from 900 to 1200 (20 seconds)
+        
+        // Style configurations
+        const styles = {
+            normal: {
+                skyGradient: ['#87CEEB', '#E0F6FF'],
+                playerColor: ['#FFD700', '#FFA500'],
+                obstacleColor: ['#2ECC71', '#27AE60'],
+                groundColor: ['#8B4513', '#654321'],
+                grassColor: '#228B22',
+                particleColors: ['#FFD700', '#FFA500', '#FF6B6B']
+            },
+            cyberpunk: {
+                skyGradient: ['#0a0a0a', '#1a1a2e'],
+                playerColor: ['#FF00FF', '#00FFFF'],
+                obstacleColor: ['#FF00FF', '#FF0080'],
+                groundColor: ['#1a1a2e', '#0a0a0a'],
+                grassColor: '#00FFFF',
+                particleColors: ['#FF00FF', '#00FFFF', '#FF0080']
+            },
+            steampunk: {
+                skyGradient: ['#8B7355', '#D2B48C'],
+                playerColor: ['#CD7F32', '#8B4513'],
+                obstacleColor: ['#4A4A4A', '#2F2F2F'],
+                groundColor: ['#654321', '#3D2817'],
+                grassColor: '#6B8E23',
+                particleColors: ['#CD7F32', '#DAA520', '#696969']
+            },
+            rainbow: {
+                skyGradient: ['#FF6B6B', '#FFD93D'],
+                playerColor: ['#6BCF7F', '#4ECDC4'],
+                obstacleColor: ['#FF6B9D', '#C44569'],
+                groundColor: ['#FFA07A', '#FF8C69'],
+                grassColor: '#98D8C8',
+                particleColors: ['#FF6B6B', '#FFD93D', '#6BCF7F', '#4ECDC4', '#FF6B9D']
+            },
+            dark: {
+                skyGradient: ['#1a1a1a', '#000000'],
+                playerColor: ['#333333', '#1a1a1a'],
+                obstacleColor: ['#2a2a2a', '#1a1a1a'],
+                groundColor: ['#0a0a0a', '#000000'],
+                grassColor: '#1a1a1a',
+                particleColors: ['#333333', '#1a1a1a', '#2a2a2a']
+            },
+            easter: {
+                skyGradient: ['#FFB6C1', '#FFC0CB'],
+                playerColor: ['#FF69B4', '#FF1493'],
+                obstacleColor: ['#9370DB', '#8A2BE2'],
+                groundColor: ['#90EE90', '#98FB98'],
+                grassColor: '#00FA9A',
+                particleColors: ['#FF69B4', '#FFD700', '#00FA9A', '#9370DB', '#FF6347']
+            },
+            basic: {
+                skyGradient: ['#FFFFFF', '#F0F0F0'],
+                playerColor: ['#000000', '#333333'],
+                obstacleColor: ['#666666', '#444444'],
+                groundColor: ['#999999', '#777777'],
+                grassColor: '#555555',
+                particleColors: ['#000000', '#333333', '#666666']
+            },
+            glitch: {
+                skyGradient: ['#0F0F0F', '#1F1F1F'],
+                playerColor: ['#00FF00', '#00FF88'],
+                obstacleColor: ['#FF0066', '#CC0099'],
+                groundColor: ['#1a1a1a', '#0a0a0a'],
+                grassColor: '#00FFFF',
+                particleColors: ['#00FF00', '#FF0066', '#00FFFF', '#FFFF00', '#FF00FF']
+            },
+            medieval: {
+                skyGradient: ['#4A5568', '#2D3748'],
+                playerColor: ['#C0A062', '#8B6914'],
+                obstacleColor: ['#6B7280', '#4B5563'],
+                groundColor: ['#5C4033', '#3E2723'],
+                grassColor: '#556B2F',
+                particleColors: ['#C0A062', '#8B6914', '#CD7F32', '#FFD700', '#A0522D']
+            },
+            horror: {
+                skyGradient: ['#1a0a0a', '#0a0000'],
+                playerColor: ['#8B0000', '#4B0000'],
+                obstacleColor: ['#2F0000', '#1F0000'],
+                groundColor: ['#1a0f0a', '#0a0500'],
+                grassColor: '#1F1F1F',
+                particleColors: ['#8B0000', '#FF0000', '#4B0000', '#330000', '#660000']
+            },
+            eco: {
+                skyGradient: ['#87CEEB', '#B0E0E6'],
+                playerColor: ['#228B22', '#32CD32'],
+                obstacleColor: ['#8B4513', '#A0522D'],
+                groundColor: ['#8B7355', '#654321'],
+                grassColor: '#006400',
+                particleColors: ['#228B22', '#32CD32', '#90EE90', '#00FF00', '#ADFF2F']
+            },
+            fantasy: {
+                skyGradient: ['#E0BBE4', '#FEC8D8'],
+                playerColor: ['#D946EF', '#A855F7'],
+                obstacleColor: ['#8B5CF6', '#6366F1'],
+                groundColor: ['#C084FC', '#A78BFA'],
+                grassColor: '#EC4899',
+                particleColors: ['#D946EF', '#A855F7', '#EC4899', '#F472B6', '#C084FC']
+            }
+        };
+
+        // ==========================================
+        // PARTICLE CLASS (for visual effects)
+        // ==========================================
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.velocityX = (Math.random() - 0.5) * 4;
+                this.velocityY = (Math.random() - 0.5) * 4 - 2;
+                this.radius = Math.random() * 3 + 2;
+                this.color = color;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.02 + 0.01;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.velocityX;
+                this.y += this.velocityY;
+                this.velocityY += 0.2; // gravity
+                this.alpha -= this.decay;
+            }
+
+            isDead() {
+                return this.alpha <= 0;
+            }
+        }
+
+        // ==========================================
+        // PLAYER CLASS
+        // ==========================================
+        class Player {
+            constructor() {
+                this.baseWidth = 70;
+                this.baseHeight = 70;
+                this.width = this.baseWidth;
+                this.height = this.baseHeight;
+                this.x = 200;
+                this.y = canvas.height - this.height - 120;
+                this.velocityY = 0;
+                this.gravity = 0.5; // Further reduced for longer jump distance
+                this.jumpPower = -20; // Increased from -18 for even farther jumps
+                this.isJumping = false;
+                this.groundY = canvas.height - this.height - 120;
+                this.rotation = 0; // For animation
+                this.squashStretch = 1; // For squash and stretch animation
+                this.invincible = false; // For surprise events
+                this.sizeMultiplier = 1; // For giant/tiny modes
+            }
+
+            draw() {
+                ctx.save();
+                
+                // Apply glitch effect (reduced frequency to prevent flickering)
+                if (currentStyle === 'glitch' && Math.random() > 0.98) {
+                    const offset = Math.min(3, Math.random() * 5);
+                    ctx.translate(
+                        (Math.random() - 0.5) * offset,
+                        (Math.random() - 0.5) * offset
+                    );
+                }
+                
+                // Apply invincibility effect
+                if (this.invincible) {
+                    ctx.globalAlpha = 0.5 + Math.sin(frameCount * 0.3) * 0.5;
+                }
+                
+                // Apply squash and stretch effect
+                const centerX = this.x + this.width / 2;
+                const centerY = this.y + this.height / 2;
+                
+                ctx.translate(centerX, centerY);
+                ctx.rotate(this.rotation);
+                ctx.scale(1, this.squashStretch);
+                ctx.translate(-centerX, -centerY);
+
+                // Draw shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.beginPath();
+                ctx.ellipse(this.x + this.width / 2, this.groundY + this.height + 5, 
+                           this.width / 2, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw player with gradient based on style
+                const currentStyleObj = styles[currentStyle];
+                const gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+                gradient.addColorStop(0, currentStyleObj.playerColor[0]);
+                gradient.addColorStop(1, currentStyleObj.playerColor[1]);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                
+                // Add border with glow effect
+                ctx.strokeStyle = currentStyleObj.playerColor[0];
+                ctx.lineWidth = 4;
+                if (this.invincible) {
+                    ctx.shadowColor = currentStyleObj.playerColor[0];
+                    ctx.shadowBlur = 20;
+                }
+                ctx.strokeRect(this.x, this.y, this.width, this.height);
+                ctx.shadowBlur = 0;
+
+                // Draw eyes with animation
+                ctx.fillStyle = currentStyle === 'dark' ? '#FFF' : '#000';
+                const eyeY = this.y + 18;
+                ctx.fillRect(this.x + 14, eyeY, 10, 10);
+                ctx.fillRect(this.x + 36, eyeY + (this.isJumping ? -2 : 0), 10, 10);
+
+                // Draw eye highlights
+                ctx.fillStyle = currentStyle === 'dark' ? '#FFD700' : '#FFF';
+                ctx.fillRect(this.x + 18, eyeY + 2, 4, 4);
+                ctx.fillRect(this.x + 40, eyeY + 2 + (this.isJumping ? -2 : 0), 4, 4);
+
+                // Draw mouth (changes based on jumping)
+                ctx.strokeStyle = currentStyle === 'dark' ? '#FFF' : '#000';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                if (this.isJumping) {
+                    // Excited mouth when jumping
+                    ctx.arc(this.x + 35, this.y + 40, 12, 0.2, Math.PI - 0.2);
+                } else {
+                    // Happy mouth when on ground
+                    ctx.arc(this.x + 35, this.y + 40, 10, 0, Math.PI);
+                }
+                ctx.stroke();
+
+                ctx.restore();
+
+                // Create trail effect when moving fast
+                if (Math.abs(this.velocityY) > 3) {
+                    for (let i = 0; i < 2; i++) {
+                        const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
+                        particles.push(new Particle(
+                            this.x + Math.random() * this.width,
+                            this.y + this.height / 2,
+                            styles[currentStyle].particleColors[colorIndex]
+                        ));
+                    }
+                }
+            }
+
+            update() {
+                // Apply gravity with smooth acceleration
+                this.velocityY += this.gravity;
+                this.y += this.velocityY;
+
+                // Squash and stretch animation
+                if (this.isJumping) {
+                    this.squashStretch = 1 + (this.velocityY * 0.01);
+                    this.rotation = Math.sin(frameCount * 0.2) * 0.05; // Slight rotation
+                } else {
+                    this.squashStretch = 1;
+                    this.rotation = 0;
+                }
+
+                // Ground collision with landing effect
+                if (this.y >= this.groundY) {
+                    this.y = this.groundY;
+                    
+                    // Create landing particles
+                    if (this.velocityY > 5) {
+                        for (let i = 0; i < 8; i++) {
+                            particles.push(new Particle(
+                                this.x + this.width / 2,
+                                this.y + this.height,
+                                styles[currentStyle].groundColor[0]
+                            ));
+                        }
+                    }
+                    
+                    this.velocityY = 0;
+                    this.isJumping = false;
+                    this.squashStretch = 0.85; // Squash on landing
+                    
+                    // Smooth recovery from squash
+                    setTimeout(() => {
+                        this.squashStretch = 1;
+                    }, 100);
+                }
+
+                // Clamp squash stretch to prevent extreme values
+                this.squashStretch = Math.max(0.7, Math.min(1.3, this.squashStretch));
+            }
+
+            jump() {
+                // Regular jump
+                if (!this.isJumping) {
+                    this.velocityY = this.jumpPower;
+                    this.isJumping = true;
+                    canDoubleJump = true;
+                    this.squashStretch = 1.2; // Stretch on jump
+                    
+                    // Create jump particles
+                    for (let i = 0; i < 10; i++) {
+                        const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
+                        particles.push(new Particle(
+                            this.x + this.width / 2,
+                            this.y + this.height,
+                            styles[currentStyle].particleColors[colorIndex]
+                        ));
+                    }
+                }
+                // Double jump
+                else if (canDoubleJump && doubleJumpCharges > 0 && doubleJumpCooldown === 0) {
+                    this.velocityY = this.jumpPower * 0.85; // Slightly weaker than first jump
+                    doubleJumpCharges--;
+                    canDoubleJump = false;
+                    updateDoubleJumpDisplay();
+                    
+                    // Create double jump particles (more dramatic)
+                    for (let i = 0; i < 20; i++) {
+                        const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
+                        particles.push(new Particle(
+                            this.x + this.width / 2,
+                            this.y + this.height / 2,
+                            styles[currentStyle].particleColors[colorIndex]
+                        ));
+                    }
+                    
+                    // Start cooldown if all charges used
+                    if (doubleJumpCharges === 0) {
+                        doubleJumpCooldown = doubleJumpCooldownMax;
+                    }
+                }
+            }
+
+            reset() {
+                this.width = this.baseWidth;
+                this.height = this.baseHeight;
+                this.sizeMultiplier = 1;
+                this.groundY = canvas.height - this.height - 120;
+                this.y = this.groundY;
+                this.velocityY = 0;
+                this.isJumping = false;
+                this.rotation = 0;
+                this.squashStretch = 1;
+                this.invincible = false;
+            }
+            
+            setSize(multiplier) {
+                this.sizeMultiplier = multiplier;
+                const oldHeight = this.height;
+                this.width = this.baseWidth * multiplier;
+                this.height = this.baseHeight * multiplier;
+                this.groundY = canvas.height - this.height - 120;
+                // Adjust Y position to keep player on ground
+                if (!this.isJumping) {
+                    this.y = this.groundY;
+                } else {
+                    // Maintain relative height when resizing mid-jump
+                    const heightDiff = this.height - oldHeight;
+                    this.y -= heightDiff;
+                }
+            }
+        }
+
+        // ==========================================
+        // OBSTACLE CLASS
+        // ==========================================
+        class Obstacle {
+            constructor() {
+                this.width = 60;
+                this.height = Math.random() * 50 + 60; // Random height between 60-110
+                this.x = canvas.width;
+                this.y = canvas.height - this.height - 120;
+                this.speed = gameSpeed; // Inherit current game speed
+                this.passed = false;
+                this.wobble = Math.random() * Math.PI * 2; // For animation
+            }
+
+            draw() {
+                ctx.save();
+                
+                // Apply glitch effect (reduced frequency to prevent flickering)
+                if (currentStyle === 'glitch' && Math.random() > 0.99) {
+                    const offset = Math.min(2, Math.random() * 4);
+                    ctx.translate(
+                        (Math.random() - 0.5) * offset,
+                        (Math.random() - 0.5) * offset
+                    );
+                }
+                
+                // Slight wobble animation
+                const wobbleOffset = Math.sin(frameCount * 0.05 + this.wobble) * 2;
+                
+                // Draw shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.beginPath();
+                ctx.ellipse(this.x + this.width / 2, canvas.height - 115, 
+                           this.width / 2, 8, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw obstacle with gradient based on style
+                const currentStyleObj = styles[currentStyle];
+                const gradient = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.height);
+                gradient.addColorStop(0, currentStyleObj.obstacleColor[0]);
+                gradient.addColorStop(1, currentStyleObj.obstacleColor[1]);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(this.x + wobbleOffset, this.y, this.width, this.height);
+                
+                // Add border
+                ctx.strokeStyle = currentStyleObj.obstacleColor[0];
+                ctx.lineWidth = 3;
+                ctx.strokeRect(this.x + wobbleOffset, this.y, this.width, this.height);
+
+                // Add animated spikes with glow
+                ctx.fillStyle = currentStyleObj.obstacleColor[1];
+                ctx.shadowColor = currentStyleObj.obstacleColor[0];
+                ctx.shadowBlur = currentStyle === 'cyberpunk' ? 10 : 5;
+                for (let i = 0; i < this.height; i += 20) {
+                    // Left spikes
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + wobbleOffset, this.y + i);
+                    ctx.lineTo(this.x - 8 + wobbleOffset, this.y + i + 5);
+                    ctx.lineTo(this.x + wobbleOffset, this.y + i + 10);
+                    ctx.fill();
+                    
+                    // Right spikes
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + this.width + wobbleOffset, this.y + i);
+                    ctx.lineTo(this.x + this.width + 8 + wobbleOffset, this.y + i + 5);
+                    ctx.lineTo(this.x + this.width + wobbleOffset, this.y + i + 10);
+                    ctx.fill();
+                }
+                ctx.shadowBlur = 0;
+
+                ctx.restore();
+            }
+
+            update() {
+                // Use current game speed for consistent behavior
+                this.x -= gameSpeed;
+
+                // Score when obstacle is passed
+                if (!this.passed && this.x + this.width < player.x) {
+                    this.passed = true;
+                    
+                    // Check for double points event
+                    const pointsToAdd = (activeEvent && activeEvent.type === 'double_points') ? 2 : 1;
+                    score += pointsToAdd;
+                    combo++;
+                    
+                    updateScore();
+                    updateCombo();
+                    
+                    // Create celebration particles
+                    for (let i = 0; i < 5; i++) {
+                        const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
+                        particles.push(new Particle(
+                            player.x + player.width,
+                            player.y + player.height / 2,
+                            styles[currentStyle].particleColors[colorIndex]
+                        ));
+                    }
+                }
+            }
+
+            isOffScreen() {
+                return this.x + this.width < 0;
+            }
+
+            collidesWith(player) {
+                // Skip collision if player is invincible
+                if (player.invincible) return false;
+                
+                // More forgiving collision detection (smaller hitbox)
+                const hitboxMargin = 8;
+                return (
+                    player.x + hitboxMargin < this.x + this.width - hitboxMargin &&
+                    player.x + player.width - hitboxMargin > this.x + hitboxMargin &&
+                    player.y + hitboxMargin < this.y + this.height - hitboxMargin &&
+                    player.y + player.height - hitboxMargin > this.y + hitboxMargin
+                );
+            }
+        }
+
+        // ==========================================
+        // CLOUD CLASS (Background decoration)
+        // ==========================================
+        class Cloud {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * 150 + 20;
+                this.width = Math.random() * 60 + 40;
+                this.height = 30;
+                this.speed = Math.random() * 0.5 + 0.3;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.height / 2, 0, Math.PI * 2);
+                ctx.arc(this.x + this.width / 3, this.y, this.height / 1.5, 0, Math.PI * 2);
+                ctx.arc(this.x + this.width / 1.5, this.y, this.height / 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            update() {
+                this.x -= this.speed;
+                if (this.x + this.width < 0) {
+                    this.x = canvas.width;
+                    this.y = Math.random() * 150 + 20;
+                }
+            }
+        }
+
+        // ==========================================
+        // FLYING OBJECT CLASS (Theme-based decorations)
+        // ==========================================
+        class FlyingObject {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * 200 + 50;
+                this.speed = Math.random() * 0.8 + 0.4;
+                this.size = Math.random() * 15 + 10;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.type = this.getTypeForTheme();
+            }
+
+            getTypeForTheme() {
+                const themeObjects = {
+                    normal: ['bird', 'butterfly'],
+                    cyberpunk: ['drone', 'data'],
+                    steampunk: ['gear', 'balloon'],
+                    medieval: ['dragon', 'flag'],
+                    rainbow: ['star', 'heart'],
+                    dark: ['bat', 'moth'],
+                    easter: ['egg', 'bunny'],
+                    glitch: ['pixel', 'error'],
+                    horror: ['ghost', 'eye'],
+                    eco: ['leaf', 'bird'],
+                    fantasy: ['star', 'fairy', 'sparkle'],
+                    basic: ['dot']
+                };
+                const objects = themeObjects[currentStyle] || ['bird'];
+                return objects[Math.floor(Math.random() * objects.length)];
+            }
+
+            draw() {
+                ctx.save();
+                const wobbleY = Math.sin(frameCount * 0.02 + this.wobble) * 5;
+                
+                switch(this.type) {
+                    case 'bird':
+                        this.drawBird(wobbleY);
+                        break;
+                    case 'butterfly':
+                        this.drawButterfly(wobbleY);
+                        break;
+                    case 'drone':
+                        this.drawDrone(wobbleY);
+                        break;
+                    case 'gear':
+                        this.drawGear(wobbleY);
+                        break;
+                    case 'dragon':
+                        this.drawDragon(wobbleY);
+                        break;
+                    case 'star':
+                        this.drawStar(wobbleY);
+                        break;
+                    case 'bat':
+                        this.drawBat(wobbleY);
+                        break;
+                    case 'ghost':
+                        this.drawGhost(wobbleY);
+                        break;
+                    case 'leaf':
+                        this.drawLeaf(wobbleY);
+                        break;
+                    case 'fairy':
+                        this.drawFairy(wobbleY);
+                        break;
+                    case 'sparkle':
+                        this.drawSparkle(wobbleY);
+                        break;
+                    default:
+                        this.drawDot(wobbleY);
+                }
+                
+                ctx.restore();
+            }
+
+            drawBird(wobbleY) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + wobbleY, this.size/2, 0, Math.PI * 2);
+                ctx.fill();
+                // Wings
+                const wingFlap = Math.sin(frameCount * 0.2) * 3;
+                ctx.beginPath();
+                ctx.ellipse(this.x - this.size/2, this.y + wobbleY, this.size, this.size/3, wingFlap, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            drawButterfly(wobbleY) {
+                const colors = styles[currentStyle].particleColors;
+                ctx.fillStyle = colors[0];
+                const wingFlap = Math.sin(frameCount * 0.15) * 0.3 + 1;
+                ctx.beginPath();
+                ctx.ellipse(this.x - this.size/3, this.y + wobbleY, this.size * wingFlap, this.size/2, 0.5, 0, Math.PI * 2);
+                ctx.ellipse(this.x + this.size/3, this.y + wobbleY, this.size * wingFlap, this.size/2, -0.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            drawDrone(wobbleY) {
+                ctx.fillStyle = '#FF00FF';
+                ctx.fillRect(this.x - this.size/2, this.y + wobbleY - this.size/2, this.size, this.size/3);
+                ctx.fillStyle = '#00FFFF';
+                ctx.fillRect(this.x - 2, this.y + wobbleY - 2, 4, 4);
+            }
+
+            drawGear(wobbleY) {
+                ctx.strokeStyle = '#CD7F32';
+                ctx.lineWidth = 2;
+                ctx.save();
+                ctx.translate(this.x, this.y + wobbleY);
+                ctx.rotate(frameCount * 0.05);
+                for(let i = 0; i < 8; i++) {
+                    ctx.rotate(Math.PI / 4);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(this.size, 0);
+                    ctx.stroke();
+                }
+                ctx.restore();
+            }
+
+            drawDragon(wobbleY) {
+                ctx.fillStyle = '#8B6914';
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y + wobbleY);
+                ctx.lineTo(this.x + this.size, this.y + wobbleY - this.size/2);
+                ctx.lineTo(this.x + this.size*1.5, this.y + wobbleY);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            drawStar(wobbleY) {
+                ctx.fillStyle = styles[currentStyle].particleColors[0];
+                ctx.save();
+                ctx.translate(this.x, this.y + wobbleY);
+                ctx.rotate(frameCount * 0.03);
+                ctx.beginPath();
+                for(let i = 0; i < 5; i++) {
+                    ctx.lineTo(Math.cos((i * 4 * Math.PI) / 5) * this.size, Math.sin((i * 4 * Math.PI) / 5) * this.size);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+
+            drawBat(wobbleY) {
+                ctx.fillStyle = 'rgba(50, 50, 50, 0.8)';
+                const wingFlap = Math.sin(frameCount * 0.3) * 5;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y + wobbleY);
+                ctx.lineTo(this.x - this.size + wingFlap, this.y + wobbleY - this.size/2);
+                ctx.lineTo(this.x, this.y + wobbleY + this.size/3);
+                ctx.lineTo(this.x + this.size - wingFlap, this.y + wobbleY - this.size/2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            drawGhost(wobbleY) {
+                ctx.fillStyle = 'rgba(200, 200, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + wobbleY, this.size, 0, Math.PI, true);
+                ctx.lineTo(this.x + this.size, this.y + wobbleY + this.size);
+                ctx.lineTo(this.x, this.y + wobbleY + this.size * 0.7);
+                ctx.lineTo(this.x - this.size, this.y + wobbleY + this.size);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            drawLeaf(wobbleY) {
+                ctx.fillStyle = '#228B22';
+                ctx.save();
+                ctx.translate(this.x, this.y + wobbleY);
+                ctx.rotate(Math.sin(frameCount * 0.05) * 0.5);
+                ctx.beginPath();
+                ctx.ellipse(0, 0, this.size, this.size/2, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            drawFairy(wobbleY) {
+                ctx.fillStyle = '#EC4899';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + wobbleY, this.size/2, 0, Math.PI * 2);
+                ctx.fill();
+                // Wings sparkle
+                ctx.fillStyle = 'rgba(236, 72, 153, 0.5)';
+                const wingSparkle = Math.sin(frameCount * 0.2) * 3;
+                ctx.beginPath();
+                ctx.arc(this.x - this.size/2, this.y + wobbleY, this.size/3 + wingSparkle, 0, Math.PI * 2);
+                ctx.arc(this.x + this.size/2, this.y + wobbleY, this.size/3 + wingSparkle, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            drawSparkle(wobbleY) {
+                ctx.fillStyle = '#D946EF';
+                ctx.shadowColor = '#D946EF';
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + wobbleY, this.size/3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            drawDot(wobbleY) {
+                ctx.fillStyle = 'rgba(100, 100, 100, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y + wobbleY, this.size/2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            update() {
+                this.x -= this.speed;
+                if (this.x + this.size < 0) {
+                    this.x = canvas.width + this.size;
+                    this.y = Math.random() * 200 + 50;
+                    this.type = this.getTypeForTheme();
+                }
+            }
+        }
+
+        // ==========================================
+        // GAME OBJECTS
+        // ==========================================
+        const player = new Player();
+        let obstacles = [];
+        let clouds = [];
+        let flyingObjects = [];
+        let obstacleSpawnTimer = 0;
+        let obstacleSpawnInterval = 140; // Increased from 100 for easier gameplay
+
+        // Initialize clouds (increased from 5 to 10)
+        for (let i = 0; i < 10; i++) {
+            clouds.push(new Cloud());
+        }
+        
+        // Initialize flying objects
+        for (let i = 0; i < 8; i++) {
+            flyingObjects.push(new FlyingObject());
+        }
+
+        // ==========================================
+        // GAME FUNCTIONS
+        // ==========================================
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+            
+            // Increase difficulty more gradually
+            if (score % 15 === 0 && score > 0) { // Changed from 10 to 15
+                gameSpeed += 0.3; // Reduced from 0.5
+                if (obstacleSpawnInterval > 80) { // Changed from 60 to 80
+                    obstacleSpawnInterval -= 3; // Reduced from 5
+                }
+            }
+        }
+
+        function updateCombo() {
+            const comboDisplay = document.getElementById('comboDisplay');
+            if (combo > 2) {
+                comboDisplay.style.display = 'block';
+                comboDisplay.textContent = `COMBO x${combo}`;
+                if (combo > maxCombo) maxCombo = combo;
+            } else {
+                comboDisplay.style.display = 'none';
+            }
+        }
+
+        function resetCombo() {
+            combo = 0;
+            document.getElementById('comboDisplay').style.display = 'none';
+        }
+
+        function updateDoubleJumpDisplay() {
+            const display = document.getElementById('doubleJumpCounter');
+            
+            if (doubleJumpCooldown > 0) {
+                const secondsLeft = Math.ceil(doubleJumpCooldown / 60);
+                display.textContent = `⏱️ Cooldown: ${secondsLeft}s`;
+                display.classList.add('cooldown');
+            } else {
+                display.textContent = `🦘 Double Jumps: ${doubleJumpCharges}/${maxDoubleJumpCharges}`;
+                display.classList.remove('cooldown');
+            }
+        }
+
+        function updateHighScore() {
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+            }
+            document.getElementById('highScoreDisplay').textContent = `High Score: ${highScore}`;
+        }
+
+        function drawGround() {
+            const currentStyleObj = styles[currentStyle];
+            
+            ctx.save();
+            
+            // Apply glitch effect to ground (reduced to prevent flickering)
+            if (currentStyle === 'glitch' && Math.random() > 0.99) {
+                const offset = Math.min(2, Math.random() * 3);
+                ctx.translate((Math.random() - 0.5) * offset, 0);
+            }
+            
+            // Draw ground with gradient
+            const groundGradient = ctx.createLinearGradient(0, canvas.height - 120, 0, canvas.height);
+            groundGradient.addColorStop(0, currentStyleObj.groundColor[0]);
+            groundGradient.addColorStop(1, currentStyleObj.groundColor[1]);
+            ctx.fillStyle = groundGradient;
+            ctx.fillRect(0, canvas.height - 120, canvas.width, 120);
+            
+            // Draw grass on top of ground
+            ctx.fillStyle = currentStyleObj.grassColor;
+            ctx.fillRect(0, canvas.height - 120, canvas.width, 10);
+            
+            // Draw grass blades
+            ctx.strokeStyle = currentStyleObj.grassColor;
+            ctx.lineWidth = 3;
+            for (let i = 0; i < canvas.width; i += 20) {
+                const offset = (frameCount * gameSpeed) % 20;
+                ctx.beginPath();
+                ctx.moveTo(i - offset, canvas.height - 120);
+                ctx.lineTo(i - offset + 3, canvas.height - 128);
+                ctx.stroke();
+            }
+
+            // Draw ground details (moving lines for effect)
+            ctx.strokeStyle = currentStyleObj.groundColor[1];
+            ctx.lineWidth = 2;
+            for (let i = 0; i < canvas.width; i += 50) {
+                const offset = (frameCount * gameSpeed) % 50;
+                ctx.beginPath();
+                ctx.moveTo(i - offset, canvas.height - 100);
+                ctx.lineTo(i - offset + 30, canvas.height - 100);
+                ctx.stroke();
+            }
+            
+            // Glitch effect - random colored lines (reduced to prevent flickering)
+            if (currentStyle === 'glitch' && Math.random() > 0.98) {
+                ctx.strokeStyle = styles.glitch.particleColors[Math.floor(Math.random() * 5)];
+                ctx.lineWidth = Math.random() * 2 + 1;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, canvas.height - 120);
+                ctx.lineTo(Math.random() * canvas.width, canvas.height);
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
+        function drawGameBorder() {
+            // Glitch effect on border (reduced to prevent flickering)
+            if (currentStyle === 'glitch' && Math.random() > 0.99) {
+                ctx.save();
+                const offset = Math.min(3, Math.random() * 5);
+                ctx.translate(
+                    (Math.random() - 0.5) * offset,
+                    (Math.random() - 0.5) * offset
+                );
+            }
+            
+            // Draw decorative border/frame around the game area
+            const borderColor = currentStyle === 'glitch' ? 
+                styles.glitch.particleColors[Math.floor(Math.random() * 5)] : 
+                'rgba(255, 215, 0, 0.6)';
+            ctx.strokeStyle = borderColor;
+            ctx.lineWidth = 8;
+            ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
+            
+            // Inner border
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
+            
+            // Corner decorations
+            const cornerSize = 30;
+            ctx.strokeStyle = '#FFD700';
+            ctx.lineWidth = 4;
+            
+            // Top-left corner
+            ctx.beginPath();
+            ctx.moveTo(15, 35);
+            ctx.lineTo(15, 15);
+            ctx.lineTo(35, 15);
+            ctx.stroke();
+            
+            // Top-right corner
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - 35, 15);
+            ctx.lineTo(canvas.width - 15, 15);
+            ctx.lineTo(canvas.width - 15, 35);
+            ctx.stroke();
+            
+            // Bottom-left corner
+            ctx.beginPath();
+            ctx.moveTo(15, canvas.height - 35);
+            ctx.lineTo(15, canvas.height - 15);
+            ctx.lineTo(35, canvas.height - 15);
+            ctx.stroke();
+            
+            // Bottom-right corner
+            ctx.beginPath();
+            ctx.moveTo(canvas.width - 35, canvas.height - 15);
+            ctx.lineTo(canvas.width - 15, canvas.height - 15);
+            ctx.lineTo(canvas.width - 15, canvas.height - 35);
+            ctx.stroke();
+            
+            if (currentStyle === 'glitch' && Math.random() > 0.99) {
+                ctx.restore();
+            }
+        }
+
+        function spawnObstacle() {
+            const newObstacle = new Obstacle();
+            
+            // If freeze event is active, freeze the new obstacle
+            if (activeEvent && activeEvent.type === 'freeze') {
+                newObstacle.frozen = true;
+            }
+            
+            obstacles.push(newObstacle);
+        }
+
+        function checkCollisions() {
+            for (let obstacle of obstacles) {
+                if (obstacle.collidesWith(player)) {
+                    // Create explosion particles on collision
+                    for (let i = 0; i < 30; i++) {
+                        const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
+                        particles.push(new Particle(
+                            player.x + player.width / 2,
+                            player.y + player.height / 2,
+                            styles[currentStyle].particleColors[colorIndex]
+                        ));
+                    }
+                    gameOver();
+                    return;
+                }
+            }
+        }
+
+        // Surprise Events System
+        function triggerRandomEvent() {
+            const events = ['slowmo', 'speedup', 'invincible', 'double_points', 'giant', 'tiny', 'freeze', 'rainbow_trail'];
+            const eventType = upcomingEventType || events[Math.floor(Math.random() * events.length)];
+            
+            activeEvent = {
+                type: eventType,
+                duration: 300, // frames (5 seconds at 60fps)
+                maxDuration: 300
+            };
+
+            showEventNotification(eventType);
+            upcomingEventType = null;
+            eventWarningShown = false;
+        }
+
+        function showEventWarning(eventType) {
+            const notification = document.getElementById('eventNotification');
+            let emoji = '';
+            let text = '';
+            let color = '';
+            
+            if (eventType === 'giant') {
+                emoji = '⚠️';
+                text = 'GIANT MODE INCOMING';
+                color = '#FF4500';
+            } else if (eventType === 'tiny') {
+                emoji = '⚠️';
+                text = 'TINY MODE INCOMING';
+                color = '#00CED1';
+            }
+            
+            notification.innerHTML = `${emoji} ${text}<div class="event-warning">Get ready!</div>`;
+            notification.style.borderColor = color;
+            notification.style.color = color;
+            notification.style.display = 'block';
+            
+            // Hide warning after 2 seconds (it will show again when event actually triggers)
+            setTimeout(() => {
+                if (!activeEvent) {
+                    notification.style.display = 'none';
+                }
+            }, 2000);
+        }
+
+        function showEventNotification(eventType) {
+            const notification = document.getElementById('eventNotification');
+            let emoji = '';
+            let text = '';
+            let color = '';
+            
+            switch(eventType) {
+                case 'slowmo':
+                    gameSpeed *= 0.5;
+                    emoji = '⏰';
+                    text = 'SLOW MOTION';
+                    color = '#4ECDC4';
+                    break;
+                case 'speedup':
+                    gameSpeed *= 1.5;
+                    emoji = '⚡';
+                    text = 'SPEED BOOST';
+                    color = '#FF6B6B';
+                    break;
+                case 'invincible':
+                    player.invincible = true;
+                    emoji = '🛡️';
+                    text = 'INVINCIBLE';
+                    color = '#FFD700';
+                    break;
+                case 'double_points':
+                    emoji = '💎';
+                    text = 'DOUBLE POINTS';
+                    color = '#9370DB';
+                    break;
+                case 'giant':
+                    player.setSize(1.8);
+                    emoji = '🔥';
+                    text = 'GIANT MODE';
+                    color = '#FF4500';
+                    break;
+                case 'tiny':
+                    player.setSize(0.5);
+                    emoji = '🐭';
+                    text = 'TINY MODE';
+                    color = '#00CED1';
+                    break;
+                case 'freeze':
+                    obstacles.forEach(obs => obs.frozen = true);
+                    emoji = '❄️';
+                    text = 'FREEZE';
+                    color = '#87CEEB';
+                    break;
+                case 'rainbow_trail':
+                    emoji = '🌈';
+                    text = 'RAINBOW TRAIL';
+                    color = '#FF69B4';
+                    break;
+            }
+            
+            notification.innerHTML = `${emoji} ${text}<div class="event-timer" id="eventTimer"></div>`;
+            notification.style.borderColor = color;
+            notification.style.color = color;
+            notification.style.display = 'block';
+        }
+
+        function updateEventTimer() {
+            if (activeEvent) {
+                const secondsLeft = Math.ceil(activeEvent.duration / 60);
+                const eventTimerEl = document.getElementById('eventTimer');
+                if (eventTimerEl) {
+                    eventTimerEl.textContent = `⏱️ ${secondsLeft}s remaining`;
+                }
+            }
+        }
+
+        function updateEvent() {
+            if (activeEvent) {
+                activeEvent.duration--;
+                updateEventTimer();
+                
+                // Rainbow trail effect
+                if (activeEvent.type === 'rainbow_trail') {
+                    for (let i = 0; i < 3; i++) {
+                        const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+                        particles.push(new Particle(
+                            player.x + player.width / 2,
+                            player.y + player.height / 2,
+                            colors[Math.floor(Math.random() * colors.length)]
+                        ));
+                    }
+                }
+                
+                if (activeEvent.duration <= 0) {
+                    // End event
+                    switch(activeEvent.type) {
+                        case 'slowmo':
+                            gameSpeed /= 0.5;
+                            break;
+                        case 'speedup':
+                            gameSpeed /= 1.5;
+                            break;
+                        case 'invincible':
+                            player.invincible = false;
+                            break;
+                        case 'giant':
+                        case 'tiny':
+                            player.setSize(1); // Reset to normal size
+                            break;
+                        case 'freeze':
+                            obstacles.forEach(obs => obs.frozen = false);
+                            break;
+                    }
+                    activeEvent = null;
+                    document.getElementById('eventNotification').style.display = 'none';
+                }
+            }
+            
+            // RNG event timing system
+            eventTimer++;
+            
+            // Show warning 2-3 seconds (120-180 frames) before giant/tiny events
+            if (!activeEvent && !eventWarningShown && eventTimer >= nextEventTime - 150) {
+                if (!upcomingEventType) {
+                    const events = ['slowmo', 'speedup', 'invincible', 'double_points', 'giant', 'tiny', 'freeze', 'rainbow_trail'];
+                    upcomingEventType = events[Math.floor(Math.random() * events.length)];
+                }
+                
+                if ((upcomingEventType === 'giant' || upcomingEventType === 'tiny') && currentState === GameState.PLAYING) {
+                    showEventWarning(upcomingEventType);
+                    eventWarningShown = true;
+                }
+            }
+            
+            if (eventTimer >= nextEventTime && !activeEvent && currentState === GameState.PLAYING) {
+                triggerRandomEvent();
+                eventTimer = 0;
+                // Set next random event time
+                nextEventTime = eventIntervalMin + Math.floor(Math.random() * (eventIntervalMax - eventIntervalMin));
+            }
+        }
+
+        // ==========================================
+        // WEATHER SYSTEM
+        // ==========================================
+        function getWeatherForStyle() {
+            // Define weather preferences for each style
+            const styleWeathers = {
+                normal: ['sunny', 'rainy', 'windy'],
+                cyberpunk: ['rainy', 'stormy', 'windy'],
+                steampunk: ['windy', 'stormy', 'rainy'],
+                medieval: ['stormy', 'windy', 'rainy'],
+                rainbow: ['sunny', 'rainy', 'windy'],
+                dark: ['stormy', 'rainy'],
+                easter: ['sunny', 'windy'],
+                glitch: ['stormy', 'windy', 'rainy'],
+                horror: ['stormy', 'rainy'],
+                eco: ['sunny', 'rainy', 'windy'],
+                fantasy: ['sunny', 'snowy', 'windy'],
+                basic: ['sunny', 'rainy', 'windy', 'snowy', 'stormy']
+            };
+            
+            const possibleWeathers = styleWeathers[currentStyle] || ['sunny', 'rainy', 'snowy', 'windy', 'stormy'];
+            return possibleWeathers[Math.floor(Math.random() * possibleWeathers.length)];
+        }
+        
+        function triggerRandomWeather() {
+            const weatherType = getWeatherForStyle();
+            
+            activeWeather = {
+                type: weatherType,
+                duration: weatherDuration, // Now 15 seconds
+                maxDuration: weatherDuration
+            };
+
+            showWeatherNotification(weatherType);
+        }
+
+        function showWeatherNotification(weatherType) {
+            const notification = document.getElementById('weatherNotification');
+            let emoji = '';
+            let text = '';
+            let color = '';
+            
+            switch(weatherType) {
+                case 'sunny':
+                    emoji = '☀️';
+                    text = 'SUNNY DAY';
+                    color = '#FFD700';
+                    break;
+                case 'rainy':
+                    emoji = '🌧️';
+                    text = 'RAIN STORM';
+                    color = '#4682B4';
+                    break;
+                case 'snowy':
+                    emoji = '❄️';
+                    text = 'SNOWFALL';
+                    color = '#E0FFFF';
+                    break;
+                case 'windy':
+                    emoji = '💨';
+                    text = 'STRONG WINDS';
+                    color = '#B0C4DE';
+                    break;
+                case 'stormy':
+                    emoji = '⛈️';
+                    text = 'THUNDERSTORM';
+                    color = '#708090';
+                    break;
+            }
+            
+            notification.innerHTML = `${emoji} ${text}`;
+            notification.style.borderColor = color;
+            notification.style.color = color;
+            notification.style.display = 'block';
+        }
+
+        function updateWeather() {
+            if (activeWeather) {
+                activeWeather.duration--;
+                
+                // Create weather particles
+                switch(activeWeather.type) {
+                    case 'rainy':
+                        for (let i = 0; i < 3; i++) {
+                            weatherParticles.push({
+                                x: Math.random() * canvas.width,
+                                y: -10,
+                                speedY: Math.random() * 3 + 5,
+                                speedX: Math.random() * 2 - 1,
+                                length: Math.random() * 10 + 10,
+                                type: 'rain'
+                            });
+                        }
+                        break;
+                    case 'snowy':
+                        for (let i = 0; i < 2; i++) {
+                            weatherParticles.push({
+                                x: Math.random() * canvas.width,
+                                y: -10,
+                                speedY: Math.random() * 1 + 1,
+                                speedX: Math.sin(frameCount * 0.05) * 0.5,
+                                size: Math.random() * 4 + 2,
+                                type: 'snow'
+                            });
+                        }
+                        break;
+                    case 'windy':
+                        if (Math.random() > 0.7) {
+                            weatherParticles.push({
+                                x: -10,
+                                y: Math.random() * canvas.height * 0.6,
+                                speedX: Math.random() * 4 + 6,
+                                speedY: Math.random() * 2 - 1,
+                                size: Math.random() * 3 + 2,
+                                type: 'wind'
+                            });
+                        }
+                        break;
+                    case 'stormy':
+                        // Rain
+                        for (let i = 0; i < 4; i++) {
+                            weatherParticles.push({
+                                x: Math.random() * canvas.width,
+                                y: -10,
+                                speedY: Math.random() * 4 + 7,
+                                speedX: Math.random() * 3 - 1.5,
+                                length: Math.random() * 15 + 15,
+                                type: 'rain'
+                            });
+                        }
+                        // Lightning flash
+                        if (Math.random() > 0.98) {
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+                        break;
+                    case 'sunny':
+                        // Add sparkle effects
+                        if (Math.random() > 0.95) {
+                            particles.push(new Particle(
+                                Math.random() * canvas.width,
+                                Math.random() * 200,
+                                '#FFD700'
+                            ));
+                        }
+                        break;
+                }
+                
+                if (activeWeather.duration <= 0) {
+                    activeWeather = null;
+                    document.getElementById('weatherNotification').style.display = 'none';
+                }
+            }
+            
+            // Update weather particles
+            weatherParticles.forEach((particle, index) => {
+                particle.x += particle.speedX;
+                particle.y += particle.speedY;
+                
+                // Remove off-screen particles
+                if (particle.y > canvas.height || particle.x > canvas.width || particle.x < -10) {
+                    weatherParticles.splice(index, 1);
+                }
+            });
+            
+            // RNG weather timing system
+            weatherTimer++;
+            if (weatherTimer >= nextWeatherTime && !activeWeather && currentState === GameState.PLAYING) {
+                triggerRandomWeather();
+                weatherTimer = 0;
+                nextWeatherTime = weatherIntervalMin + Math.floor(Math.random() * (weatherIntervalMax - weatherIntervalMin));
+            }
+        }
+
+        function drawWeatherParticles() {
+            weatherParticles.forEach(particle => {
+                ctx.save();
+                
+                switch(particle.type) {
+                    case 'rain':
+                        ctx.strokeStyle = 'rgba(100, 149, 237, 0.6)';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x, particle.y);
+                        ctx.lineTo(particle.x + particle.speedX, particle.y + particle.length);
+                        ctx.stroke();
+                        break;
+                    case 'snow':
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                        ctx.beginPath();
+                        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'wind':
+                        ctx.strokeStyle = 'rgba(176, 196, 222, 0.4)';
+                        ctx.lineWidth = particle.size;
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x, particle.y);
+                        ctx.lineTo(particle.x + 20, particle.y);
+                        ctx.stroke();
+                        break;
+                }
+                
+                ctx.restore();
+            });
+        }
+
+        function gameOver() {
+            currentState = GameState.GAME_OVER;
+            
+            // Clear any active events
+            if (activeEvent) {
+                // Revert event effects
+                switch(activeEvent.type) {
+                    case 'slowmo':
+                        gameSpeed /= 0.5;
+                        break;
+                    case 'speedup':
+                        gameSpeed /= 1.5;
+                        break;
+                    case 'invincible':
+                        player.invincible = false;
+                        break;
+                    case 'giant':
+                    case 'tiny':
+                        player.setSize(1); // Reset to normal size
+                        break;
+                    case 'freeze':
+                        obstacles.forEach(obs => obs.frozen = false);
+                        break;
+                }
+                activeEvent = null;
+                document.getElementById('eventNotification').style.display = 'none';
+            }
+            
+            // Clear weather
+            if (activeWeather) {
+                activeWeather = null;
+                document.getElementById('weatherNotification').style.display = 'none';
+            }
+            weatherParticles = [];
+            
+            updateHighScore();
+            resetCombo();
+            document.getElementById('finalScore').textContent = `Your Score: ${score}${maxCombo > 5 ? ` | Max Combo: ${maxCombo}` : ''}`;
+            document.getElementById('gameOverMenu').classList.remove('hidden');
+        }
+
+        function resetGame() {
+            score = 0;
+            combo = 0;
+            maxCombo = 0;
+            gameSpeed = 4; // Reduced starting speed
+            obstacleSpawnInterval = 140; // Increased spawn interval
+            obstacleSpawnTimer = 0;
+            frameCount = 0;
+            eventTimer = 0;
+            upcomingEventType = null;
+            eventWarningShown = false;
+            
+            // Set initial random event time
+            nextEventTime = eventIntervalMin + Math.floor(Math.random() * (eventIntervalMax - eventIntervalMin));
+            
+            // Clear any active events
+            if (activeEvent) {
+                activeEvent = null;
+                document.getElementById('eventNotification').style.display = 'none';
+            }
+            
+            // Reset weather system
+            weatherTimer = 0;
+            nextWeatherTime = weatherIntervalMin + Math.floor(Math.random() * (weatherIntervalMax - weatherIntervalMin));
+            if (activeWeather) {
+                activeWeather = null;
+                document.getElementById('weatherNotification').style.display = 'none';
+            }
+            weatherParticles = [];
+            
+            obstacles = [];
+            particles = [];
+            doubleJumpCharges = maxDoubleJumpCharges;
+            doubleJumpCooldown = 0;
+            canDoubleJump = false;
+            player.reset();
+            updateScore();
+            resetCombo();
+            updateDoubleJumpDisplay();
+        }
+
+        function showRestartNotification(success = true) {
+            const notification = document.getElementById('restartNotification');
+            
+            if (success) {
+                notification.textContent = '✅ Game Restarted!';
+                notification.style.borderColor = '#38ef7d';
+                notification.style.color = '#38ef7d';
+            } else {
+                notification.textContent = '❌ Restart Failed!';
+                notification.style.borderColor = '#FF6B6B';
+                notification.style.color = '#FF6B6B';
+            }
+            
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 1500);
+        }
+
+        function pauseGame() {
+            if (currentState === GameState.PLAYING) {
+                currentState = GameState.PAUSED;
+                document.getElementById('pauseMenu').classList.remove('hidden');
+            }
+        }
+
+        function resumeGame() {
+            if (currentState === GameState.PAUSED) {
+                currentState = GameState.PLAYING;
+                document.getElementById('pauseMenu').classList.add('hidden');
+            }
+        }
+
+        function startGame() {
+            try {
+                const isRestart = currentState === GameState.PLAYING || currentState === GameState.PAUSED || currentState === GameState.GAME_OVER;
+                resetGame();
+                currentState = GameState.PLAYING;
+                document.getElementById('mainMenu').classList.add('hidden');
+                document.getElementById('gameOverMenu').classList.add('hidden');
+                document.getElementById('pauseMenu').classList.add('hidden');
+                
+                // Only show notification if it's a restart, not initial game start
+                if (isRestart) {
+                    showRestartNotification(true);
+                }
+            } catch (error) {
+                console.error('Failed to start game:', error);
+                showRestartNotification(false);
+            }
+        }
+
+        function returnToMenu() {
+            currentState = GameState.MENU;
+            
+            // Clear any active events when returning to menu
+            if (activeEvent) {
+                // Revert event effects
+                switch(activeEvent.type) {
+                    case 'slowmo':
+                        gameSpeed /= 0.5;
+                        break;
+                    case 'speedup':
+                        gameSpeed /= 1.5;
+                        break;
+                    case 'invincible':
+                        player.invincible = false;
+                        break;
+                    case 'giant':
+                    case 'tiny':
+                        player.setSize(1); // Reset to normal size
+                        break;
+                    case 'freeze':
+                        obstacles.forEach(obs => obs.frozen = false);
+                        break;
+                }
+                activeEvent = null;
+                document.getElementById('eventNotification').style.display = 'none';
+            }
+            
+            // Clear weather
+            if (activeWeather) {
+                activeWeather = null;
+                document.getElementById('weatherNotification').style.display = 'none';
+            }
+            weatherParticles = [];
+            
+            resetGame();
+            document.getElementById('mainMenu').classList.remove('hidden');
+            document.getElementById('gameOverMenu').classList.add('hidden');
+            document.getElementById('pauseMenu').classList.add('hidden');
+        }
+
+        // ==========================================
+        // GAME LOOP
+        // ==========================================
+        function gameLoop() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw sky gradient based on style
+            const currentStyleObj = styles[currentStyle];
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, currentStyleObj.skyGradient[0]);
+            gradient.addColorStop(1, currentStyleObj.skyGradient[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Update and draw clouds
+            clouds.forEach(cloud => {
+                cloud.update();
+                cloud.draw();
+            });
+            
+            // Update and draw flying objects
+            flyingObjects.forEach(obj => {
+                obj.update();
+                obj.draw();
+            });
+
+            // Draw ground
+            drawGround();
+            
+            // Draw decorative border
+            drawGameBorder();
+            
+            // Draw weather particles (always visible)
+            drawWeatherParticles();
+
+            // Update and draw particles (always active for effects)
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                
+                if (particle.isDead()) {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (currentState === GameState.PLAYING) {
+                frameCount++;
+
+                // Update events
+                updateEvent();
+                
+                // Update weather
+                updateWeather();
+                
+                // Update double jump cooldown
+                if (doubleJumpCooldown > 0) {
+                    doubleJumpCooldown--;
+                    if (doubleJumpCooldown === 0) {
+                        doubleJumpCharges = maxDoubleJumpCharges;
+                    }
+                    updateDoubleJumpDisplay();
+                }
+
+                // Update and draw player
+                player.update();
+                player.draw();
+
+                // Spawn obstacles
+                obstacleSpawnTimer++;
+                if (obstacleSpawnTimer >= obstacleSpawnInterval) {
+                    spawnObstacle();
+                    obstacleSpawnTimer = 0;
+                }
+
+                // Update and draw obstacles
+                obstacles.forEach((obstacle, index) => {
+                    // Check if obstacle is frozen
+                    if (!obstacle.frozen) {
+                        obstacle.update();
+                    }
+                    obstacle.draw();
+
+                    // Remove off-screen obstacles
+                    if (obstacle.isOffScreen()) {
+                        obstacles.splice(index, 1);
+                    }
+                });
+
+                // Check collisions
+                checkCollisions();
+            } else {
+                // Draw player even when not playing
+                player.draw();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ==========================================
+        // EVENT LISTENERS
+        // ==========================================
+        
+        // Jump controls
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (currentState === GameState.PLAYING) {
+                    player.jump();
+                } else if (currentState === GameState.PAUSED) {
+                    resumeGame();
+                }
+            }
+            
+            // Pause/Resume
+            if (e.code === 'Escape') {
+                e.preventDefault();
+                if (currentState === GameState.PLAYING) {
+                    pauseGame();
+                } else if (currentState === GameState.PAUSED) {
+                    resumeGame();
+                }
+            }
+            
+            // Reset game
+            if (e.code === 'KeyR') {
+                if (currentState === GameState.PLAYING || currentState === GameState.PAUSED) {
+                    if (currentState === GameState.PAUSED) {
+                        document.getElementById('pauseMenu').classList.add('hidden');
+                    }
+                    startGame();
+                }
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            if (currentState === GameState.PLAYING) {
+                player.jump();
+            } else if (currentState === GameState.PAUSED) {
+                resumeGame();
+            }
+        });
+
+        // Touch support for mobile
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (currentState === GameState.PLAYING) {
+                player.jump();
+            } else if (currentState === GameState.PAUSED) {
+                resumeGame();
+            }
+        });
+
+        // Style switcher functionality
+        const styleBtn = document.getElementById('styleBtn');
+        const styleMenu = document.getElementById('styleMenu');
+        const styleOptions = document.querySelectorAll('.style-option');
+
+        styleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            styleMenu.classList.toggle('hidden');
+        });
+
+        styleOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const style = option.getAttribute('data-style');
+                currentStyle = style;
+                
+                // Update active state
+                styleOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                // Refresh flying objects to match new theme
+                flyingObjects = [];
+                for (let i = 0; i < 8; i++) {
+                    flyingObjects.push(new FlyingObject());
+                }
+                
+                styleMenu.classList.add('hidden');
+            });
+        });
+
+        // Close style menu when clicking outside
+        document.addEventListener('click', () => {
+            styleMenu.classList.add('hidden');
+        });
+
+        // Menu buttons
+        document.getElementById('playBtn').addEventListener('click', startGame);
+        document.getElementById('restartBtn').addEventListener('click', startGame);
+        document.getElementById('exitBtn').addEventListener('click', () => {
+            if (confirm('Are you sure you want to exit?')) {
+                window.close();
+            }
+        });
+        document.getElementById('exitBtn2').addEventListener('click', returnToMenu);
+        
+        // Pause menu buttons
+        document.getElementById('pauseRestartBtn').addEventListener('click', () => {
+            document.getElementById('pauseMenu').classList.add('hidden');
+            startGame();
+        });
+        
+        document.getElementById('pauseMenuBtn').addEventListener('click', returnToMenu);
+        
+        // Version button
+        document.getElementById('versionBtn').addEventListener('click', () => {
+            document.getElementById('versionModal').classList.remove('hidden');
+        });
+        
+        document.getElementById('closeVersionBtn').addEventListener('click', () => {
+            document.getElementById('versionModal').classList.add('hidden');
+        });
+
+        // ==========================================
+        // INITIALIZE GAME
+        // ==========================================
+        updateHighScore();
+        updateDoubleJumpDisplay();
+        gameLoop();
+
+        // Make canvas responsive
+        function resizeCanvas() {
+            const container = document.getElementById('gameContainer');
+            const containerWidth = container.offsetWidth;
+            const aspectRatio = canvas.width / canvas.height;
+            
+            if (containerWidth < 2000) {
+                canvas.style.width = '100%';
+                canvas.style.height = 'auto';
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+    </script>
+</body>
+</html>
