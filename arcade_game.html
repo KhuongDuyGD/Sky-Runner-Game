@@ -388,6 +388,11 @@
             bottom: 20px;
             right: 20px;
             z-index: 20;
+            display: none; /* Hidden during gameplay, shown in menu */
+        }
+        
+        #styleSwitcher.show-in-menu {
+            display: block;
         }
 
         #styleBtn {
@@ -560,11 +565,11 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: linear-gradient(135deg, rgba(10, 10, 30, 0.98) 0%, rgba(20, 20, 40, 0.98) 100%);
-            padding: 30px;
+            padding: 40px;
             border-radius: 25px;
             border: 4px solid #FFD700;
-            max-width: 800px;
-            max-height: 85vh;
+            max-width: 850px;
+            max-height: 88vh;
             overflow-y: auto;
             z-index: 20;
             box-shadow: 0 25px 70px rgba(255, 215, 0, 0.5);
@@ -573,15 +578,41 @@
         #versionModal h2 {
             color: #FFD700;
             font-size: 2.8rem;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             text-align: center;
             text-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
             font-weight: 900;
+            padding-right: 40px;
+        }
+
+        .version-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            color: white;
+            border: 3px solid #FF6B6B;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 21;
+        }
+
+        .version-close-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.6);
         }
 
         .version-section {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-            padding: 25px;
+            padding: 25px 30px;
             margin: 20px 0;
             border-radius: 18px;
             border-left: 6px solid #4ECDC4;
@@ -591,41 +622,43 @@
         }
 
         .version-section:hover {
-            transform: translateX(5px);
+            transform: translateX(8px);
             box-shadow: 0 12px 30px rgba(78, 205, 196, 0.4);
         }
 
         .version-section h3 {
             color: #4ECDC4;
-            font-size: 1.6rem;
-            margin-bottom: 15px;
+            font-size: 1.7rem;
+            margin-bottom: 18px;
             font-weight: bold;
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .version-badge {
             background: linear-gradient(135deg, #FF6B6B, #FF8E53);
             color: white;
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 0.7rem;
             font-weight: bold;
             letter-spacing: 1px;
+            animation: pulse 2s infinite;
         }
 
         .version-section ul {
-            color: #E0E0E0;
+            color: #E8E8E8;
             margin-left: 25px;
-            line-height: 2;
-            font-size: 1.05rem;
+            line-height: 2.2;
+            font-size: 1.08rem;
         }
 
         .version-section li {
-            margin: 8px 0;
+            margin: 10px 0;
             position: relative;
-            padding-left: 10px;
+            padding-left: 12px;
         }
 
         .version-section li::before {
@@ -634,6 +667,7 @@
             left: -15px;
             color: #4ECDC4;
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
         .close-version {
@@ -682,6 +716,270 @@
             50% { opacity: 0.6; }
         }
 
+        /* Ability Display */
+        #abilityDisplay {
+            position: absolute;
+            top: 230px;
+            left: 30px;
+            color: #FFD700;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            z-index: 5;
+        }
+
+        .ability-ready {
+            color: #38ef7d !important;
+            border-color: rgba(56, 239, 125, 0.5) !important;
+            animation: abilityPulse 1.5s infinite;
+        }
+
+        @keyframes abilityPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Missions Display */
+        #missionsDisplay {
+            position: absolute;
+            top: 230px;
+            right: 30px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            z-index: 5;
+            max-width: 320px;
+        }
+
+        .mission-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #4ECDC4;
+            padding-left: 10px;
+        }
+
+        .mission-complete {
+            color: #38ef7d;
+            border-left-color: #38ef7d;
+            text-decoration: line-through;
+        }
+
+        /* Settings Menu */
+        #settingsMenu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(10, 10, 30, 0.98) 0%, rgba(20, 20, 40, 0.98) 100%);
+            padding: 40px;
+            border-radius: 25px;
+            border: 4px solid #FFD700;
+            max-width: 500px;
+            width: 90%;
+            z-index: 20;
+            box-shadow: 0 25px 70px rgba(255, 215, 0, 0.5);
+        }
+
+        #settingsMenu h2 {
+            color: #FFD700;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
+            font-weight: 900;
+        }
+
+        .settings-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            color: white;
+            border: 3px solid #FF6B6B;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 21;
+        }
+
+        .settings-close-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .setting-item {
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .setting-label {
+            color: #4ECDC4;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .setting-toggle.active {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .setting-toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+
+        .setting-toggle.active::after {
+            transform: translateX(30px);
+        }
+
+        .setting-slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .setting-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .setting-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: 2px solid #FFD700;
+            transition: all 0.3s ease;
+        }
+
+        .setting-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        .setting-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: 2px solid #FFD700;
+            transition: all 0.3s ease;
+        }
+
+        .setting-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+
+        .setting-value {
+            color: #FFD700;
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 45px;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .setting-select {
+            width: 100%;
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.4);
+            color: #FFD700;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+
+        .setting-select:hover {
+            border-color: #FFD700;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .setting-select:focus {
+            border-color: #4ECDC4;
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
+        }
+
+        .setting-select option {
+            background: #1a1a2e;
+            color: #FFD700;
+            padding: 10px;
+        }
+
+        .btn-settings {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
+        .btn-settings:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.6);
+            border-color: #FFD700;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .menu-overlay h1 {
@@ -699,14 +997,21 @@
 </head>
 <body>
     <div id="gameContainer">
-        <canvas id="gameCanvas" width="2400" height="1000"></canvas>
+        <canvas id="gameCanvas" width="2400" height="1150"></canvas>
         
         <!-- Score Display -->
         <div id="scoreDisplay">Score: 0</div>
         <div id="highScoreDisplay">High Score: 0</div>
         <div id="comboDisplay">COMBO x0</div>
         <div id="doubleJumpCounter">🦘 Double Jumps: 5/5</div>
-        <div id="gameInfo">🎮 SKY RUNNER v7.2<br>SPACE: Jump | ESC: Pause | R: Reset</div>
+        <div id="abilityDisplay">⚡ Ability: Ready (E)</div>
+        <div id="missionsDisplay">
+            <div style="color: #FFD700; margin-bottom: 8px;">🎯 Missions:</div>
+            <div id="mission1" class="mission-item">Loading...</div>
+            <div id="mission2" class="mission-item">Loading...</div>
+            <div id="mission3" class="mission-item">Loading...</div>
+        </div>
+        <div id="gameInfo">🎮 SKY RUNNER v10.3<br>SPACE: Jump | E: Ability | ESC: Pause | R: Reset</div>
         
         <!-- Weather Notification -->
         <div id="weatherNotification"></div>
@@ -724,6 +1029,7 @@
             <p>Press ESC to Resume</p>
             <div class="pause-buttons">
                 <button class="btn btn-restart" id="pauseRestartBtn"><span>🔄 Restart Game</span></button>
+                <button class="btn btn-settings" id="pauseSettingsBtn"><span>⚙️ Settings</span></button>
                 <button class="btn btn-menu" id="pauseMenuBtn"><span>🏠 Main Menu</span></button>
             </div>
         </div>
@@ -741,7 +1047,7 @@
                 <div class="style-option" data-style="easter">🥚 Easter Egg</div>
                 <div class="style-option" data-style="glitch">⚡ The Glitch</div>
                 <div class="style-option" data-style="horror">👻 Horror</div>
-                <div class="style-option" data-style="eco">🌿 Eco-Friendly</div>
+                <div class="style-option" data-style="eco">🌿 Natural</div>
                 <div class="style-option" data-style="fantasy">✨ Fantasy</div>
                 <div class="style-option" data-style="basic">📦 Basic</div>
             </div>
@@ -767,18 +1073,126 @@
             <div class="menu-buttons">
                 <div class="menu-buttons-row">
                     <button class="btn btn-play" id="playBtn"><span>▶️ Play Game</span></button>
+                    <button class="btn btn-settings" id="menuSettingsBtn"><span>⚙️ Settings</span></button>
+                </div>
+                <div class="menu-buttons-row">
+                    <button class="btn btn-version" id="versionBtn"><span>📋 Version History</span></button>
                     <button class="btn btn-exit" id="exitBtn"><span>🚪 Exit</span></button>
                 </div>
-                <button class="btn btn-version" id="versionBtn"><span>📋 Version History</span></button>
             </div>
         </div>
 
         <!-- Version Modal -->
         <div id="versionModal" class="hidden">
+            <button class="version-close-btn" id="versionCloseX">✕</button>
             <h2>📜 Version History</h2>
             
             <div class="version-section">
-                <h3>🚀 Version 7.2 - "Polish & Expansion" <span class="version-badge">CURRENT</span></h3>
+                <h3>🚀 Version 10.3 - "Performance & Optimization" <span class="version-badge">CURRENT</span></h3>
+                <ul>
+                    <li>⚡ Major FPS optimization throughout the game for smoother gameplay</li>
+                    <li>🎯 Added FPS selector in Settings menu (30, 60, 90, 120, Unlimited)</li>
+                    <li>🎮 Optimized game loop with delta time tracking for consistent frame pacing</li>
+                    <li>💾 FPS settings automatically saved to localStorage</li>
+                    <li>🔧 Enhanced rendering performance with better loop optimization</li>
+                    <li>🚫 Removed "Freeze" event from the game for better balance</li>
+                    <li>✨ Improved obstacle update logic with reverse iteration for better performance</li>
+                    <li>📊 Default FPS set to 60 (Recommended) with options up to unlimited</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🚀 Version 10.2 - "Audio Control & Enhancement"</h3>
+                <ul>
+                    <li>⚙️ Added comprehensive Settings menu accessible from Main Menu and Pause Menu</li>
+                    <li>🎵 Music control with volume slider (0-100%) and on/off toggle</li>
+                    <li>🔊 Sound effects control with independent volume slider and toggle</li>
+                    <li>💾 Settings automatically saved to localStorage and persist between sessions</li>
+                    <li>🎹 Keyboard controls for sliders (Arrow Left/Right to adjust volume)</li>
+                    <li>🎶 Music now auto-plays on game load (respects user settings)</li>
+                    <li>🎮 Enhanced audio system with better volume management</li>
+                    <li>✨ Improved user experience with visual feedback on settings changes</li>
+                </ul>
+            </div>
+
+            <div class="version-section">
+                <h3>🚀 Version 10.1 - "Balance & Refinement"</h3>
+                <ul>
+                    <li>🌈 <strong>Rainbow:</strong> Nerfed Rainbow Shoot to 1 bullet (from 2), increased cooldown to 10s</li>
+                    <li>👤 <strong>Dark:</strong> Reworked Shadow Step - Now 100px dash (like Techno Dash), can use 2 times, 10s cooldown</li>
+                    <li>💨 <strong>Cyberpunk:</strong> Added 10s cooldown to Techno Dash</li>
+                    <li>⏰ <strong>Steampunk:</strong> Fixed Clock Work to exactly match Freeze event mechanics</li>
+                    <li>⚠️ <strong>Glitch:</strong> Removed toggle mode - Error Bullets now single-use activation (shoots 3 bullets)</li>
+                    <li>🌪️ <strong>Natural:</strong> Reworked Natural Disaster - Now grants invincibility for 5s instead of triggering weather</li>
+                    <li>🧚 <strong>Fantasy:</strong> Increased Fairy Wings duration to 5s, added 2s invincibility, cooldown to 12s</li>
+                    <li>💎 <strong>Basic:</strong> Fixed passive 2x points multiplier not working properly</li>
+                    <li>⚖️ Removed 3 random events: Freeze, Slow Motion, and Speed Boost</li>
+                    <li>🎮 Only 3 events remain: Double Points, Giant Mode, and Tiny Mode</li>
+                    <li>✨ Updated ability display UI to reflect new mechanics</li>
+                </ul>
+            </div>
+            
+            <div class="version-section">
+                <h3>🚀 Version 10.0 - "Ultimate Skill System"</h3>
+                <ul>
+                    <li>⚡ Complete ability system overhaul with 12 unique theme-specific skills</li>
+                    <li>🎯 <strong>Normal:</strong> Speed Boost - 2x movement speed for 4 seconds</li>
+                    <li>💨 <strong>Cyberpunk:</strong> Techno Dash - Instant 300px dash forward</li>
+                    <li>⏰ <strong>Steampunk:</strong> Clock Work - Freeze all obstacles for 5 seconds</li>
+                    <li>🛡️ <strong>Medieval:</strong> Purification - Invincibility for 5 seconds</li>
+                    <li>🌈 <strong>Rainbow:</strong> Rainbow Shoot - Fire 2 bullets that destroy obstacles</li>
+                    <li>👤 <strong>Dark:</strong> Shadow Step - Teleport past 2 obstacles with brief invincibility</li>
+                    <li>🥚 <strong>Easter:</strong> Egg Shield - Block 1 collision for 10 seconds</li>
+                    <li>⚠️ <strong>Glitch:</strong> Error Bullet - Toggle mode: Auto-fire bullets (5-10 pts/shot) every 0.75s</li>
+                    <li>🩸 <strong>Horror:</strong> Blood Drain - Toggle mode: Consume 1 pt/s for invincibility</li>
+                    <li>🌪️ <strong>Natural:</strong> Natural Disaster - Trigger all 4 weather types (20s cooldown)</li>
+                    <li>🧚 <strong>Fantasy:</strong> Fairy Wings - Fly freely with bounds checking (y ≥ 50px)</li>
+                    <li>💎 <strong>Basic:</strong> 2x Points - Passive ability, no active skill</li>
+                    <li>🎯 Added Projectile class for shooting mechanics</li>
+                    <li>🎮 Toggle abilities (Glitch/Horror) can be turned on/off with E key</li>
+                    <li>🛡️ Enhanced collision detection for shields and teleportation</li>
+                    <li>💰 Point multipliers stack (Basic + Double Points = 4x)</li>
+                    <li>✨ Updated ability display UI with toggle states and special indicators</li>
+                </ul>
+            </div>
+            
+            <div class="version-section">
+                <h3>🚀 Version 9.0 - "UX Revolution & Balance Overhaul"</h3>
+                <ul>
+                    <li>🎨 Redesigned Version History modal with professional layout and functional close button</li>
+                    <li>📐 Increased canvas height to 1150px for improved vertical gameplay space</li>
+                    <li>🎯 Relocated Missions display to top-right corner (below Score/Combo) for better organization</li>
+                    <li>🔥 Giant Mode now reduces player speed for strategic gameplay</li>
+                    <li>🐭 Tiny Mode now increases player speed for enhanced mobility</li>
+                    <li>🌈 Rainbow trail effect integrated into Fantasy theme</li>
+                    <li>🎨 Theme selection now restricted to main menu only</li>
+                    <li>🌿 Renamed "Eco-Friendly" theme to "Natural"</li>
+                    <li>🌦️ Removed Sunny weather; renamed "Rain Storm" to "Rain"</li>
+                    <li>⛈️ Reduced Thunderstorm lightning flash frequency for comfort</li>
+                    <li>💨 Enhanced Strong Wind effects for better visual clarity</li>
+                    <li>⏰ Increased event duration (20-40s intervals, 6-10s active time)</li>
+                    <li>🌤️ Increased weather duration (25-50s intervals, 30s active time)</li>
+                    <li>🎲 Enhanced RNG system for more varied timing patterns</li>
+                    <li>⚖️ Removed Invincible and Rainbow Trail events for better balance</li>
+                </ul>
+            </div>
+            
+            <div class="version-section">
+                <h3>🚀 Version 8.0 - "Ultimate Gameplay Overhaul"</h3>
+                <ul>
+                    <li>🎵 Added full sound system with theme-based background music and SFX</li>
+                    <li>⚡ Implemented style-based active abilities (E key): Glitch Dash, Clockwork Gear, Petrify, Fairy Wings</li>
+                    <li>🦇 Added aerial obstacles (flying enemies at different heights)</li>
+                    <li>💀 Added trap obstacles that deduct points and reset combo</li>
+                    <li>🐉 Periodic boss fights every 200 points with laser and projectile attacks</li>
+                    <li>🎯 Mission system with 3 random objectives per run and bonus rewards</li>
+                    <li>⚖️ Balanced random events with weighted selection and adjusted durations</li>
+                    <li>🎮 Increased event intervals for fairer gameplay (15-30s instead of 10-20s)</li>
+                </ul>
+            </div>
+            
+            <div class="version-section">
+                <h3>🚀 Version 7.2 - "Polish & Expansion"</h3>
                 <ul>
                     <li>⏰ Extended weather duration from 15s to 20s for even longer immersion</li>
                     <li>📺 Expanded canvas to 2400x1000 pixels (100px taller for more vertical space)</li>
@@ -912,8 +1326,6 @@
                     <li>Scoring system with high score tracking</li>
                 </ul>
             </div>
-
-            <button class="close-version" id="closeVersionBtn">Close</button>
         </div>
 
         <!-- Game Over Menu -->
@@ -925,9 +1337,327 @@
                 <button class="btn btn-exit" id="exitBtn2">Main Menu</button>
             </div>
         </div>
+
+        <!-- Settings Menu -->
+        <div id="settingsMenu" class="hidden">
+            <button class="settings-close-btn" id="settingsCloseBtn">✕</button>
+            <h2>⚙️ Settings</h2>
+            
+            <div class="setting-item">
+                <div class="setting-header">
+                    <div class="setting-label">🎵 Music</div>
+                    <div class="setting-toggle" id="musicToggle"></div>
+                </div>
+                <div class="setting-slider-container">
+                    <input type="range" min="0" max="100" value="30" class="setting-slider" id="musicSlider">
+                    <div class="setting-value" id="musicValue">30</div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-header">
+                    <div class="setting-label">🔊 Sound Effects</div>
+                    <div class="setting-toggle active" id="soundToggle"></div>
+                </div>
+                <div class="setting-slider-container">
+                    <input type="range" min="0" max="100" value="50" class="setting-slider" id="soundSlider">
+                    <div class="setting-value" id="soundValue">50</div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">🎯 Target FPS</div>
+                <select class="setting-select" id="fpsSelector">
+                    <option value="30">30 FPS</option>
+                    <option value="60" selected>60 FPS (Recommended)</option>
+                    <option value="90">90 FPS</option>
+                    <option value="120">120 FPS</option>
+                    <option value="0">Unlimited</option>
+                </select>
+            </div>
+        </div>
     </div>
 
     <script>
+        // ==========================================
+        // SOUND MANAGER
+        // ==========================================
+        class SoundManager {
+            constructor() {
+                this.audioContext = null;
+                this.masterGain = null;
+                this.musicGain = null;
+                this.sfxGain = null;
+                this.currentMusic = null;
+                this.musicVolume = 0.3;
+                this.sfxVolume = 0.5;
+                this.musicEnabled = true;
+                this.sfxEnabled = true;
+                this.initialized = false;
+                
+                // Load settings from localStorage
+                this.loadSettings();
+            }
+
+            loadSettings() {
+                const savedMusicVolume = localStorage.getItem('musicVolume');
+                const savedSfxVolume = localStorage.getItem('sfxVolume');
+                const savedMusicEnabled = localStorage.getItem('musicEnabled');
+                const savedSfxEnabled = localStorage.getItem('sfxEnabled');
+                
+                if (savedMusicVolume !== null) this.musicVolume = parseFloat(savedMusicVolume);
+                if (savedSfxVolume !== null) this.sfxVolume = parseFloat(savedSfxVolume);
+                if (savedMusicEnabled !== null) this.musicEnabled = savedMusicEnabled === 'true';
+                if (savedSfxEnabled !== null) this.sfxEnabled = savedSfxEnabled === 'true';
+            }
+
+            saveSettings() {
+                localStorage.setItem('musicVolume', this.musicVolume);
+                localStorage.setItem('sfxVolume', this.sfxVolume);
+                localStorage.setItem('musicEnabled', this.musicEnabled);
+                localStorage.setItem('sfxEnabled', this.sfxEnabled);
+            }
+
+            setMusicVolume(volume) {
+                this.musicVolume = Math.max(0, Math.min(1, volume));
+                if (this.musicGain) {
+                    this.musicGain.gain.value = this.musicEnabled ? this.musicVolume : 0;
+                }
+                this.saveSettings();
+            }
+
+            setSfxVolume(volume) {
+                this.sfxVolume = Math.max(0, Math.min(1, volume));
+                if (this.sfxGain) {
+                    this.sfxGain.gain.value = this.sfxEnabled ? this.sfxVolume : 0;
+                }
+                this.saveSettings();
+            }
+
+            toggleMusic(enabled) {
+                this.musicEnabled = enabled;
+                if (this.musicGain) {
+                    this.musicGain.gain.value = this.musicEnabled ? this.musicVolume : 0;
+                }
+                this.saveSettings();
+            }
+
+            toggleSfx(enabled) {
+                this.sfxEnabled = enabled;
+                if (this.sfxGain) {
+                    this.sfxGain.gain.value = this.sfxEnabled ? this.sfxVolume : 0;
+                }
+                this.saveSettings();
+            }
+
+            init() {
+                if (this.initialized) return;
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    this.masterGain = this.audioContext.createGain();
+                    this.musicGain = this.audioContext.createGain();
+                    this.sfxGain = this.audioContext.createGain();
+                    
+                    this.musicGain.connect(this.masterGain);
+                    this.sfxGain.connect(this.masterGain);
+                    this.masterGain.connect(this.audioContext.destination);
+                    
+                    this.musicGain.gain.value = this.musicEnabled ? this.musicVolume : 0;
+                    this.sfxGain.gain.value = this.sfxEnabled ? this.sfxVolume : 0;
+                    
+                    this.initialized = true;
+                } catch (error) {
+                    console.error('Failed to initialize audio:', error);
+                }
+            }
+
+            playJump() {
+                if (!this.initialized) return;
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                osc.connect(gain);
+                gain.connect(this.sfxGain);
+                
+                osc.frequency.setValueAtTime(300, this.audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, this.audioContext.currentTime + 0.1);
+                
+                gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + 0.15);
+            }
+
+            playDoubleJump() {
+                if (!this.initialized) return;
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                osc.connect(gain);
+                gain.connect(this.sfxGain);
+                
+                osc.frequency.setValueAtTime(400, this.audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, this.audioContext.currentTime + 0.15);
+                
+                gain.gain.setValueAtTime(0.4, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.2);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + 0.2);
+            }
+
+            playCollision() {
+                if (!this.initialized) return;
+                const bufferSize = this.audioContext.sampleRate * 0.3;
+                const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+                const data = buffer.getChannelData(0);
+                
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+                }
+                
+                const source = this.audioContext.createBufferSource();
+                const gain = this.audioContext.createGain();
+                source.buffer = buffer;
+                source.connect(gain);
+                gain.connect(this.sfxGain);
+                
+                gain.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                
+                source.start();
+            }
+
+            playScore() {
+                if (!this.initialized) return;
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                osc.connect(gain);
+                gain.connect(this.sfxGain);
+                
+                osc.frequency.setValueAtTime(800, this.audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, this.audioContext.currentTime + 0.05);
+                
+                gain.gain.setValueAtTime(0.2, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + 0.1);
+            }
+
+            playAbility() {
+                if (!this.initialized) return;
+                const osc1 = this.audioContext.createOscillator();
+                const osc2 = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(this.sfxGain);
+                
+                osc1.frequency.setValueAtTime(500, this.audioContext.currentTime);
+                osc2.frequency.setValueAtTime(700, this.audioContext.currentTime);
+                osc1.frequency.exponentialRampToValueAtTime(1000, this.audioContext.currentTime + 0.3);
+                osc2.frequency.exponentialRampToValueAtTime(1400, this.audioContext.currentTime + 0.3);
+                
+                gain.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                
+                osc1.start(this.audioContext.currentTime);
+                osc2.start(this.audioContext.currentTime);
+                osc1.stop(this.audioContext.currentTime + 0.3);
+                osc2.stop(this.audioContext.currentTime + 0.3);
+            }
+
+            playCombo(comboLevel) {
+                if (!this.initialized) return;
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                osc.connect(gain);
+                gain.connect(this.sfxGain);
+                
+                const baseFreq = 600 + (comboLevel * 50);
+                osc.frequency.setValueAtTime(baseFreq, this.audioContext.currentTime);
+                
+                gain.gain.setValueAtTime(0.25, this.audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
+                
+                osc.start(this.audioContext.currentTime);
+                osc.stop(this.audioContext.currentTime + 0.15);
+            }
+
+            playMissionComplete() {
+                if (!this.initialized) return;
+                const frequencies = [523, 659, 784, 1047];
+                frequencies.forEach((freq, index) => {
+                    const osc = this.audioContext.createOscillator();
+                    const gain = this.audioContext.createGain();
+                    
+                    osc.connect(gain);
+                    gain.connect(this.sfxGain);
+                    
+                    const startTime = this.audioContext.currentTime + (index * 0.1);
+                    osc.frequency.setValueAtTime(freq, startTime);
+                    
+                    gain.gain.setValueAtTime(0.2, startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.2);
+                    
+                    osc.start(startTime);
+                    osc.stop(startTime + 0.2);
+                });
+            }
+
+            startThemeMusic(theme) {
+                if (!this.initialized) return;
+                this.stopMusic();
+                
+                const patterns = {
+                    cyberpunk: { notes: [262, 330, 392, 523], tempo: 0.3, wave: 'square' },
+                    steampunk: { notes: [196, 247, 294, 392], tempo: 0.4, wave: 'triangle' },
+                    medieval: { notes: [220, 277, 330, 440], tempo: 0.5, wave: 'triangle' },
+                    fantasy: { notes: [330, 415, 494, 659], tempo: 0.35, wave: 'sine' },
+                    horror: { notes: [110, 123, 139, 147], tempo: 0.6, wave: 'sawtooth' },
+                    normal: { notes: [262, 330, 392, 494], tempo: 0.4, wave: 'sine' }
+                };
+                
+                const pattern = patterns[theme] || patterns.normal;
+                let noteIndex = 0;
+                
+                const playNote = () => {
+                    if (!this.currentMusic) return;
+                    
+                    const osc = this.audioContext.createOscillator();
+                    const gain = this.audioContext.createGain();
+                    
+                    osc.type = pattern.wave;
+                    osc.connect(gain);
+                    gain.connect(this.musicGain);
+                    
+                    osc.frequency.value = pattern.notes[noteIndex % pattern.notes.length];
+                    gain.gain.value = 0.15;
+                    
+                    osc.start(this.audioContext.currentTime);
+                    osc.stop(this.audioContext.currentTime + pattern.tempo * 0.8);
+                    
+                    noteIndex++;
+                };
+                
+                this.currentMusic = setInterval(playNote, pattern.tempo * 1000);
+            }
+
+            stopMusic() {
+                if (this.currentMusic) {
+                    clearInterval(this.currentMusic);
+                    this.currentMusic = null;
+                }
+            }
+        }
+
+        const soundManager = new SoundManager();
+
         // ==========================================
         // GAME CONFIGURATION
         // ==========================================
@@ -950,15 +1680,22 @@
         let combo = 0;
         let maxCombo = 0;
         
+        // FPS Control System
+        let targetFPS = parseInt(localStorage.getItem('targetFPS')) || 60;
+        let lastFrameTime = performance.now();
+        let deltaTime = 0;
+        let frameInterval = targetFPS === 0 ? 0 : 1000 / targetFPS; // 0 = unlimited
+        
         // Particle system for effects
         let particles = [];
+        let projectiles = []; // For shooting abilities
         
-        // Surprise events
+        // Surprise events (balanced)
         let eventTimer = 0;
         let activeEvent = null;
         let nextEventTime = 0;
-        let eventIntervalMin = 600; // 10 seconds minimum
-        let eventIntervalMax = 1200; // 20 seconds maximum
+        let eventIntervalMin = 1200; // 20 seconds minimum (increased from 15s)
+        let eventIntervalMax = 2400; // 40 seconds maximum (increased from 30s)
         let upcomingEventType = null;
         let eventWarningShown = false;
         
@@ -972,14 +1709,37 @@
         let doubleJumpCooldownMax = 600; // 10 seconds at 60fps
         let canDoubleJump = false;
         
+        // Style Abilities System
+        let styleAbility = {
+            ready: true,
+            cooldown: 0,
+            cooldownMax: 480, // 8 seconds at 60fps
+            active: false,
+            duration: 0,
+            toggleActive: false, // For toggle abilities (Glitch, Horror)
+            shieldHits: 0, // For Easter Egg Shield
+            obstaclesSkipped: 0 // For Shadow Step
+        };
+        
+        // Mission System
+        let currentMissions = [];
+        let completedMissions = 0;
+        
+        // Boss Fight System
+        let bossActive = false;
+        let bossPhase = 0;
+        let bossAttackTimer = 0;
+        let bossAttacks = [];
+        let lastBossScore = 0;
+        
         // Weather System
         let weatherTimer = 0;
         let activeWeather = null;
         let nextWeatherTime = 0;
-        let weatherIntervalMin = 900; // 15 seconds minimum
-        let weatherIntervalMax = 1800; // 30 seconds maximum
+        let weatherIntervalMin = 1500; // 25 seconds minimum (increased from 15s)
+        let weatherIntervalMax = 3000; // 50 seconds maximum (increased from 30s)
         let weatherParticles = [];
-        let weatherDuration = 1200; // Increased from 900 to 1200 (20 seconds)
+        let weatherDuration = 1800; // Increased from 1200 to 1800 (30 seconds)
         
         // Style configurations
         const styles = {
@@ -1119,6 +1879,65 @@
         }
 
         // ==========================================
+        // PROJECTILE CLASS (for shooting abilities)
+        // ==========================================
+        class Projectile {
+            constructor(x, y, color, type = 'normal') {
+                this.x = x;
+                this.y = y;
+                this.width = 15;
+                this.height = 15;
+                this.speed = 12;
+                this.color = color;
+                this.type = type; // 'normal' or 'error'
+                this.active = true;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                
+                if (this.type === 'error') {
+                    // Glitchy effect for Error Bullet
+                    ctx.fillStyle = Math.random() > 0.5 ? '#00FF00' : '#FF0066';
+                }
+                
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.width / 2, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Add trail effect
+                for (let i = 0; i < 3; i++) {
+                    particles.push(new Particle(
+                        this.x - i * 3,
+                        this.y,
+                        this.color
+                    ));
+                }
+                
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.speed;
+                
+                // Deactivate if off screen
+                if (this.x > canvas.width) {
+                    this.active = false;
+                }
+            }
+
+            checkCollision(obstacle) {
+                return this.x < obstacle.x + obstacle.width &&
+                       this.x + this.width > obstacle.x &&
+                       this.y < obstacle.y + obstacle.height &&
+                       this.y + this.height > obstacle.y;
+            }
+        }
+
+        // ==========================================
         // PLAYER CLASS
         // ==========================================
         class Player {
@@ -1217,23 +2036,54 @@
 
                 ctx.restore();
 
-                // Create trail effect when moving fast
+                // Create trail effect when moving fast - theme-based trails
                 if (Math.abs(this.velocityY) > 3) {
-                    for (let i = 0; i < 2; i++) {
-                        const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
-                        particles.push(new Particle(
-                            this.x + Math.random() * this.width,
-                            this.y + this.height / 2,
-                            styles[currentStyle].particleColors[colorIndex]
-                        ));
+                    // Fantasy theme gets rainbow trail effect
+                    if (currentStyle === 'fantasy') {
+                        for (let i = 0; i < 3; i++) {
+                            const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+                            particles.push(new Particle(
+                                this.x + Math.random() * this.width,
+                                this.y + this.height / 2,
+                                colors[Math.floor(Math.random() * colors.length)]
+                            ));
+                        }
+                    } else {
+                        // Other themes use their standard particle colors
+                        for (let i = 0; i < 2; i++) {
+                            const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
+                            particles.push(new Particle(
+                                this.x + Math.random() * this.width,
+                                this.y + this.height / 2,
+                                styles[currentStyle].particleColors[colorIndex]
+                            ));
+                        }
                     }
                 }
             }
 
             update() {
                 // Apply gravity with smooth acceleration
-                this.velocityY += this.gravity;
+                // Fantasy ability (Fairy Wings) disables gravity
+                if (!(styleAbility.active && currentStyle === 'fantasy')) {
+                    this.velocityY += this.gravity;
+                }
                 this.y += this.velocityY;
+                
+                // Prevent flying out of screen bounds (for Fantasy Fairy Wings)
+                if (styleAbility.active && currentStyle === 'fantasy') {
+                    const topBound = 50; // Don't fly above this
+                    const bottomBound = this.groundY;
+                    
+                    if (this.y < topBound) {
+                        this.y = topBound;
+                        this.velocityY = 0;
+                    }
+                    if (this.y > bottomBound) {
+                        this.y = bottomBound;
+                        this.velocityY = 0;
+                    }
+                }
 
                 // Squash and stretch animation
                 if (this.isJumping) {
@@ -1274,12 +2124,16 @@
             }
 
             jump() {
+                // Can't jump if petrified (medieval ability)
+                if (styleAbility.active && currentStyle === 'medieval') return;
+                
                 // Regular jump
                 if (!this.isJumping) {
                     this.velocityY = this.jumpPower;
                     this.isJumping = true;
                     canDoubleJump = true;
                     this.squashStretch = 1.2; // Stretch on jump
+                    soundManager.playJump();
                     
                     // Create jump particles
                     for (let i = 0; i < 10; i++) {
@@ -1297,6 +2151,7 @@
                     doubleJumpCharges--;
                     canDoubleJump = false;
                     updateDoubleJumpDisplay();
+                    soundManager.playDoubleJump();
                     
                     // Create double jump particles (more dramatic)
                     for (let i = 0; i < 20; i++) {
@@ -1426,8 +2281,19 @@
                 if (!this.passed && this.x + this.width < player.x) {
                     this.passed = true;
                     
-                    // Check for double points event
-                    const pointsToAdd = (activeEvent && activeEvent.type === 'double_points') ? 2 : 1;
+                    // Calculate points with multipliers
+                    let pointsToAdd = 1;
+                    
+                    // Apply double points event
+                    if (activeEvent && activeEvent.type === 'double_points') {
+                        pointsToAdd *= 2;
+                    }
+                    
+                    // Apply Basic theme passive 2x multiplier
+                    if (currentStyle === 'basic') {
+                        pointsToAdd *= 2;
+                    }
+                    
                     score += pointsToAdd;
                     combo++;
                     
@@ -1455,6 +2321,309 @@
                 if (player.invincible) return false;
                 
                 // More forgiving collision detection (smaller hitbox)
+                const hitboxMargin = 8;
+                return (
+                    player.x + hitboxMargin < this.x + this.width - hitboxMargin &&
+                    player.x + player.width - hitboxMargin > this.x + hitboxMargin &&
+                    player.y + hitboxMargin < this.y + this.height - hitboxMargin &&
+                    player.y + player.height - hitboxMargin > this.y + hitboxMargin
+                );
+            }
+        }
+
+        // ==========================================
+        // AERIAL OBSTACLE CLASS (Flying enemies)
+        // ==========================================
+        class AerialObstacle {
+            constructor() {
+                this.width = 50;
+                this.height = 50;
+                this.x = canvas.width;
+                // Random height - can be low, medium, or high
+                const heights = [
+                    canvas.height - 250, // Low - requires jump
+                    canvas.height - 350, // Medium - requires good timing
+                    canvas.height - 450  // High - can run under
+                ];
+                this.y = heights[Math.floor(Math.random() * heights.length)];
+                this.speed = gameSpeed * 0.9;
+                this.passed = false;
+                this.wobble = Math.random() * Math.PI * 2;
+            }
+
+            draw() {
+                ctx.save();
+                const wobbleOffset = Math.sin(frameCount * 0.08 + this.wobble) * 3;
+                
+                const currentStyleObj = styles[currentStyle];
+                
+                // Draw shadow
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                ctx.beginPath();
+                ctx.ellipse(this.x + this.width / 2, canvas.height - 115, 
+                           this.width / 3, 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw flying enemy (bat/drone style)
+                const gradient = ctx.createRadialGradient(
+                    this.x + this.width / 2, this.y + this.height / 2 + wobbleOffset, 0,
+                    this.x + this.width / 2, this.y + this.height / 2 + wobbleOffset, this.width / 2
+                );
+                gradient.addColorStop(0, currentStyleObj.obstacleColor[0]);
+                gradient.addColorStop(1, currentStyleObj.obstacleColor[1]);
+                ctx.fillStyle = gradient;
+                
+                // Draw body
+                ctx.beginPath();
+                ctx.ellipse(this.x + this.width / 2, this.y + this.height / 2 + wobbleOffset, 
+                           this.width / 2, this.height / 3, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw wings
+                ctx.fillStyle = currentStyleObj.obstacleColor[1];
+                const wingFlap = Math.sin(frameCount * 0.2 + this.wobble) * 5;
+                ctx.beginPath();
+                ctx.ellipse(this.x + 10, this.y + this.height / 2 + wobbleOffset, 
+                           15, 10 + wingFlap, -0.3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.ellipse(this.x + this.width - 10, this.y + this.height / 2 + wobbleOffset, 
+                           15, 10 + wingFlap, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw eyes
+                ctx.fillStyle = currentStyle === 'dark' ? '#FFF' : '#000';
+                ctx.fillRect(this.x + this.width / 2 - 8, this.y + this.height / 2 - 5 + wobbleOffset, 5, 5);
+                ctx.fillRect(this.x + this.width / 2 + 3, this.y + this.height / 2 - 5 + wobbleOffset, 5, 5);
+                
+                ctx.restore();
+            }
+
+            update() {
+                this.x -= this.speed;
+
+                if (!this.passed && this.x + this.width < player.x) {
+                    this.passed = true;
+                    
+                    // Calculate points with multipliers
+                    let points = 1;
+                    
+                    // Basic theme 2x multiplier
+                    if (currentStyle === 'basic') {
+                        points *= 2;
+                    }
+                    
+                    // Double points event
+                    if (activeEvent && activeEvent.type === 'double_points') {
+                        points *= 2;
+                    }
+                    
+                    score += points;
+                    combo++;
+                    updateScore();
+                    updateCombo();
+                    soundManager.playScore();
+                    if (combo > 2) soundManager.playCombo(Math.min(combo, 10));
+                    checkMissionProgress('score');
+                }
+            }
+
+            isOffScreen() {
+                return this.x + this.width < 0;
+            }
+
+            collidesWith(player) {
+                if (player.invincible || (styleAbility.active && currentStyle === 'cyberpunk')) return false;
+                
+                const hitboxMargin = 8;
+                return (
+                    player.x + hitboxMargin < this.x + this.width - hitboxMargin &&
+                    player.x + player.width - hitboxMargin > this.x + hitboxMargin &&
+                    player.y + hitboxMargin < this.y + this.height - hitboxMargin &&
+                    player.y + player.height - hitboxMargin > this.y + hitboxMargin
+                );
+            }
+        }
+
+        // ==========================================
+        // TRAP OBSTACLE CLASS (Looks like collectible but harmful)
+        // ==========================================
+        class TrapObstacle {
+            constructor() {
+                this.width = 40;
+                this.height = 40;
+                this.x = canvas.width;
+                this.y = canvas.height - 120 - 100; // Floating above ground
+                this.speed = gameSpeed;
+                this.passed = false;
+                this.spin = 0;
+                this.pulse = 0;
+            }
+
+            draw() {
+                ctx.save();
+                this.spin += 0.05;
+                this.pulse = Math.sin(frameCount * 0.1) * 5;
+                
+                // Draw warning glow
+                ctx.shadowColor = '#FF0000';
+                ctx.shadowBlur = 10 + this.pulse;
+                
+                // Draw fake coin/collectible
+                ctx.fillStyle = '#8B0000'; // Dark red instead of gold
+                ctx.beginPath();
+                ctx.arc(this.x + this.width / 2, this.y + this.height / 2, 
+                       (this.width / 2) + (this.pulse / 5), 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw X symbol to indicate trap
+                ctx.strokeStyle = '#FF0000';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(this.x + 10, this.y + 10);
+                ctx.lineTo(this.x + this.width - 10, this.y + this.height - 10);
+                ctx.moveTo(this.x + this.width - 10, this.y + 10);
+                ctx.lineTo(this.x + 10, this.y + this.height - 10);
+                ctx.stroke();
+                
+                ctx.shadowBlur = 0;
+                ctx.restore();
+            }
+
+            update() {
+                this.x -= this.speed;
+
+                if (!this.passed && this.x + this.width < player.x) {
+                    this.passed = true;
+                }
+            }
+
+            isOffScreen() {
+                return this.x + this.width < 0;
+            }
+
+            collidesWith(player) {
+                if (player.invincible || (styleAbility.active && currentStyle === 'cyberpunk')) return false;
+                
+                const hitboxMargin = 5;
+                return (
+                    player.x + hitboxMargin < this.x + this.width - hitboxMargin &&
+                    player.x + player.width - hitboxMargin > this.x + hitboxMargin &&
+                    player.y + hitboxMargin < this.y + this.height - hitboxMargin &&
+                    player.y + player.height - hitboxMargin > this.y + hitboxMargin
+                );
+            }
+
+            onCollision() {
+                // Trap effects: lose points and reset combo
+                score = Math.max(0, score - 5);
+                resetCombo();
+                updateScore();
+                
+                // Create red particles
+                for (let i = 0; i < 15; i++) {
+                    particles.push(new Particle(this.x + this.width / 2, this.y + this.height / 2, '#FF0000'));
+                }
+            }
+        }
+
+        // ==========================================
+        // BOSS ATTACK CLASS
+        // ==========================================
+        class BossAttack {
+            constructor(type, x, y) {
+                this.type = type; // 'laser', 'projectile'
+                this.x = x;
+                this.y = y;
+                this.width = type === 'laser' ? 30 : 50;
+                this.height = type === 'laser' ? canvas.height - 120 : 50;
+                this.speed = type === 'laser' ? 0 : gameSpeed * 1.5;
+                this.warningTime = 60; // 1 second warning
+                this.active = false;
+                this.duration = type === 'laser' ? 120 : 0; // 2 seconds for laser
+                this.durationTimer = 0;
+            }
+
+            draw() {
+                ctx.save();
+                
+                if (!this.active && this.warningTime > 0) {
+                    // Draw warning indicator
+                    ctx.strokeStyle = 'rgba(255, 0, 0, ' + (0.5 + Math.sin(frameCount * 0.3) * 0.3) + ')';
+                    ctx.lineWidth = 4;
+                    ctx.setLineDash([10, 10]);
+                    
+                    if (this.type === 'laser') {
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, 0);
+                        ctx.lineTo(this.x, canvas.height - 120);
+                        ctx.stroke();
+                        ctx.moveTo(this.x + this.width, 0);
+                        ctx.lineTo(this.x + this.width, canvas.height - 120);
+                        ctx.stroke();
+                    } else {
+                        ctx.strokeRect(this.x, this.y, this.width, this.height);
+                    }
+                    ctx.setLineDash([]);
+                } else if (this.active) {
+                    // Draw active attack
+                    if (this.type === 'laser') {
+                        const gradient = ctx.createLinearGradient(this.x, 0, this.x + this.width, 0);
+                        gradient.addColorStop(0, 'rgba(255, 0, 0, 0.3)');
+                        gradient.addColorStop(0.5, 'rgba(255, 0, 0, 0.8)');
+                        gradient.addColorStop(1, 'rgba(255, 0, 0, 0.3)');
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(this.x, 0, this.width, canvas.height - 120);
+                        
+                        // Laser beam effect
+                        ctx.strokeStyle = '#FF0000';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(this.x + this.width / 2, 0);
+                        ctx.lineTo(this.x + this.width / 2, canvas.height - 120);
+                        ctx.stroke();
+                    } else {
+                        // Projectile
+                        ctx.fillStyle = '#FF4500';
+                        ctx.shadowColor = '#FF0000';
+                        ctx.shadowBlur = 15;
+                        ctx.beginPath();
+                        ctx.arc(this.x + this.width / 2, this.y + this.height / 2, this.width / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+                
+                ctx.restore();
+            }
+
+            update() {
+                if (!this.active) {
+                    this.warningTime--;
+                    if (this.warningTime <= 0) {
+                        this.active = true;
+                    }
+                } else {
+                    if (this.type === 'projectile') {
+                        this.x -= this.speed;
+                    } else {
+                        this.durationTimer++;
+                    }
+                }
+            }
+
+            isFinished() {
+                if (this.type === 'laser') {
+                    return this.active && this.durationTimer >= this.duration;
+                } else {
+                    return this.x + this.width < 0;
+                }
+            }
+
+            collidesWith(player) {
+                if (!this.active || player.invincible || (styleAbility.active && 
+                    (currentStyle === 'cyberpunk' || currentStyle === 'medieval'))) return false;
+                
                 const hitboxMargin = 8;
                 return (
                     player.x + hitboxMargin < this.x + this.width - hitboxMargin &&
@@ -1780,6 +2949,481 @@
             }
         }
 
+        function updateAbilityDisplay() {
+            const display = document.getElementById('abilityDisplay');
+            const abilityNames = {
+                normal: '⚡ Speed Boost',
+                cyberpunk: '💨 Techno Dash',
+                steampunk: '⏰ Clock Work',
+                medieval: '🛡️ Purification',
+                rainbow: '🌈 Rainbow Shoot',
+                dark: '👤 Shadow Step',
+                easter: '🥚 Egg Shield',
+                glitch: '⚠️ Error Bullet',
+                horror: '🩸 Blood Drain',
+                eco: '�️ Natural Disaster',
+                fantasy: '🧚 Fairy Wings',
+                basic: '� 2x Points'
+            };
+            
+            const abilityName = abilityNames[currentStyle] || '⚡ Ability';
+            
+            // Handle toggle abilities
+            if (styleAbility.toggleActive) {
+                if (currentStyle === 'horror') {
+                    display.textContent = `${abilityName}: ON (E)`;
+                    display.classList.remove('ability-ready');
+                    display.style.color = '#8B0000';
+                }
+                return;
+            }
+            
+            // Special display for Basic theme
+            if (currentStyle === 'basic') {
+                display.textContent = `${abilityName}: Passive`;
+                display.classList.add('ability-ready');
+                display.style.color = '#FFD700';
+                return;
+            }
+            
+            if (styleAbility.active) {
+                const secondsLeft = Math.ceil(styleAbility.duration / 60);
+                if (currentStyle === 'easter' && styleAbility.shieldHits > 0) {
+                    display.textContent = `${abilityName}: ${styleAbility.shieldHits} hit`;
+                } else if (currentStyle === 'dark' && styleAbility.usesRemaining > 0) {
+                    display.textContent = `${abilityName}: ${styleAbility.usesRemaining} left`;
+                } else {
+                    display.textContent = `${abilityName}: ${secondsLeft}s`;
+                }
+                display.classList.remove('ability-ready');
+                display.style.color = '#4ECDC4';
+            } else if (styleAbility.cooldown > 0) {
+                const secondsLeft = Math.ceil(styleAbility.cooldown / 60);
+                display.textContent = `${abilityName}: ${secondsLeft}s`;
+                display.classList.remove('ability-ready');
+                display.style.color = '#FF6B6B';
+            } else {
+                display.textContent = `${abilityName}: Ready (E)`;
+                display.classList.add('ability-ready');
+            }
+        }
+
+        function activateStyleAbility() {
+            // Handle Horror toggle ability separately
+            if (currentStyle === 'horror') {
+                // Blood Drain - Toggle mode
+                if (!styleAbility.toggleActive) {
+                    if (score < 1) {
+                        showEventNotification('⚠️ Not enough points!');
+                        return;
+                    }
+                    styleAbility.toggleActive = true;
+                    player.invincible = true;
+                    showEventNotification('🩸 BLOOD DRAIN ACTIVE!');
+                    updateAbilityDisplay();
+                } else {
+                    styleAbility.toggleActive = false;
+                    player.invincible = false;
+                    showEventNotification('✓ Blood Drain Disabled');
+                    updateAbilityDisplay();
+                }
+                return;
+            }
+            
+            // Normal abilities with cooldown
+            if (!styleAbility.ready || styleAbility.cooldown > 0 || styleAbility.active) return;
+            
+            soundManager.playAbility();
+            styleAbility.active = true;
+            styleAbility.ready = false;
+            
+            // Different abilities for different styles
+            switch(currentStyle) {
+                case 'normal':
+                    // Speed Boost - 2x speed for 4 seconds
+                    styleAbility.duration = 240; // 4 seconds
+                    gameSpeed *= 2;
+                    obstacles.forEach(obs => obs.speed = gameSpeed);
+                    showEventNotification('⚡ SPEED BOOST!');
+                    break;
+                    
+                case 'cyberpunk':
+                    // Techno Dash - Instant 300px forward with 10s cooldown
+                    styleAbility.cooldownMax = 600; // 10 seconds cooldown
+                    const dashDistance = 300;
+                    // Move all obstacles backward to simulate player moving forward
+                    obstacles.forEach(obs => obs.x -= dashDistance);
+                    aerialObstacles.forEach(obs => obs.x -= dashDistance);
+                    trapObstacles.forEach(obs => obs.x -= dashDistance);
+                    if (bossActive) {
+                        bossAttacks.forEach(attack => attack.x -= dashDistance);
+                    }
+                    // Create dash particles
+                    for (let i = 0; i < 20; i++) {
+                        particles.push(new Particle(
+                            player.x + Math.random() * dashDistance,
+                            player.y + Math.random() * player.height,
+                            '#00FFFF'
+                        ));
+                    }
+                    styleAbility.duration = 1; // Instant
+                    showEventNotification('💨 TECHNO DASH!');
+                    checkMissionProgress('ability');
+                    break;
+                    
+                case 'steampunk':
+                    // Clock Work - Freeze time for 5 seconds (same as Freeze event)
+                    styleAbility.duration = 300; // 5 seconds
+                    // Freeze all obstacles (same as freeze event)
+                    obstacles.forEach(obs => obs.frozen = true);
+                    aerialObstacles.forEach(obs => obs.frozen = true);
+                    trapObstacles.forEach(obs => obs.frozen = true);
+                    showEventNotification('⏰ TIME FROZEN!');
+                    break;
+                    
+                case 'medieval':
+                    // Purification - Invincible for 5 seconds
+                    styleAbility.duration = 300; // 5 seconds
+                    player.invincible = true;
+                    showEventNotification('🛡️ PURIFICATION!');
+                    break;
+                    
+                case 'rainbow':
+                    // Rainbow Shoot - Shoot 1 bullet with 10s cooldown
+                    styleAbility.cooldownMax = 600; // 10 seconds cooldown
+                    const rainbowColors = ['#FF0000', '#FFA500', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
+                    projectiles.push(new Projectile(
+                        player.x + player.width,
+                        player.y + player.height / 2,
+                        rainbowColors[Math.floor(Math.random() * rainbowColors.length)],
+                        'rainbow'
+                    ));
+                    styleAbility.duration = 1; // Instant
+                    showEventNotification('🌈 RAINBOW SHOOT!');
+                    checkMissionProgress('ability');
+                    break;
+                    
+                case 'dark':
+                    // Shadow Step - 100px dash, can use 2 times, 10s cooldown
+                    styleAbility.cooldownMax = 600; // 10 seconds cooldown
+                    if (!styleAbility.usesRemaining) {
+                        styleAbility.usesRemaining = 2;
+                    }
+                    
+                    if (styleAbility.usesRemaining > 0) {
+                        const shadowDashDistance = 100;
+                        // Move all obstacles backward to simulate player moving forward
+                        obstacles.forEach(obs => obs.x -= shadowDashDistance);
+                        aerialObstacles.forEach(obs => obs.x -= shadowDashDistance);
+                        trapObstacles.forEach(obs => obs.x -= shadowDashDistance);
+                        if (bossActive) {
+                            bossAttacks.forEach(attack => attack.x -= shadowDashDistance);
+                        }
+                        // Create shadow effect
+                        for (let i = 0; i < 30; i++) {
+                            particles.push(new Particle(
+                                player.x + Math.random() * shadowDashDistance,
+                                player.y + Math.random() * player.height,
+                                '#000000'
+                            ));
+                        }
+                        
+                        styleAbility.usesRemaining--;
+                        styleAbility.duration = 1; // Instant
+                        showEventNotification(`👤 SHADOW STEP! (${styleAbility.usesRemaining} left)`);
+                        checkMissionProgress('ability');
+                    }
+                    break;
+                    
+                case 'easter':
+                    // Egg Shield - Block 1 hit for 10 seconds
+                    styleAbility.duration = 600; // 10 seconds
+                    styleAbility.shieldHits = 1;
+                    showEventNotification('🥚 EGG SHIELD ACTIVE!');
+                    break;
+                    
+                case 'glitch':
+                    // Error Bullet - Single use, shoot bullets
+                    const glitchColors = ['#00FF00', '#FF0066', '#00FFFF', '#FFFF00', '#FF00FF'];
+                    // Shoot 3 bullets in a spread pattern
+                    for (let i = 0; i < 3; i++) {
+                        projectiles.push(new Projectile(
+                            player.x + player.width,
+                            player.y + (i * player.height / 3),
+                            glitchColors[Math.floor(Math.random() * glitchColors.length)],
+                            'glitch'
+                        ));
+                    }
+                    styleAbility.duration = 1; // Instant
+                    showEventNotification('⚠️ ERROR BULLETS!');
+                    checkMissionProgress('ability');
+                    break;
+                    
+                case 'natural':
+                    // Natural Disaster - Give invincibility for 5 seconds
+                    styleAbility.duration = 300; // 5 seconds
+                    styleAbility.cooldownMax = 1200; // 20 seconds cooldown
+                    player.invincible = true;
+                    showEventNotification('🌪️ NATURAL DISASTER!');
+                    checkMissionProgress('ability');
+                    break;
+                    
+                case 'fantasy':
+                    // Fairy Wings - 5s flight + 2s invincibility, 12s cooldown
+                    styleAbility.duration = 300; // 5 seconds
+                    styleAbility.cooldownMax = 720; // 12 seconds cooldown
+                    styleAbility.invincibilityDuration = 120; // 2 seconds of invincibility
+                    player.gravity = 0;
+                    player.velocityY = 0;
+                    player.invincible = true;
+                    showEventNotification('🧚 FAIRY WINGS!');
+                    break;
+                    
+                case 'basic':
+                    // No ability for basic
+                    styleAbility.active = false;
+                    styleAbility.ready = true;
+                    showEventNotification('⚠️ No ability available');
+                    return;
+                    
+                default:
+                    // Generic shield
+                    styleAbility.duration = 120; // 2 seconds
+                    player.invincible = true;
+                    showEventNotification('⚡ ABILITY ACTIVATED!');
+            }
+            
+            updateAbilityDisplay();
+            if (styleAbility.duration > 1) {
+                checkMissionProgress('ability');
+            }
+        }
+
+        function deactivateStyleAbility() {
+            if (!styleAbility.active) return;
+            
+            styleAbility.active = false;
+            styleAbility.cooldown = styleAbility.cooldownMax;
+            
+            // Cleanup based on style
+            switch(currentStyle) {
+                case 'normal':
+                    // Restore normal speed
+                    gameSpeed /= 2;
+                    obstacles.forEach(obs => obs.speed = gameSpeed);
+                    break;
+                case 'steampunk':
+                    // Unfreeze obstacles
+                    obstacles.forEach(obs => obs.frozen = false);
+                    aerialObstacles.forEach(obs => obs.frozen = false);
+                    trapObstacles.forEach(obs => obs.frozen = false);
+                    break;
+                case 'medieval':
+                    player.invincible = false;
+                    break;
+                case 'dark':
+                    // Reset uses for next activation
+                    styleAbility.usesRemaining = 0;
+                    styleAbility.cooldownMax = 480; // Reset to default
+                    break;
+                case 'easter':
+                    // Shield expires naturally
+                    styleAbility.shieldHits = 0;
+                    break;
+                case 'fantasy':
+                    player.gravity = 0.5;
+                    // Handle invincibility duration separately
+                    if (styleAbility.invincibilityDuration !== undefined) {
+                        if (styleAbility.invincibilityDuration > 0) {
+                            // Invincibility still active, will be removed after duration ends
+                        } else {
+                            player.invincible = false;
+                        }
+                        delete styleAbility.invincibilityDuration;
+                    } else {
+                        player.invincible = false;
+                    }
+                    styleAbility.cooldownMax = 480; // Reset to default
+                    break;
+                case 'natural':
+                    player.invincible = false;
+                    styleAbility.cooldownMax = 480; // Reset to default
+                    break;
+                case 'rainbow':
+                    styleAbility.cooldownMax = 480; // Reset to default
+                    break;
+                case 'cyberpunk':
+                    styleAbility.cooldownMax = 480; // Reset to default
+                    break;
+                default:
+                    player.invincible = false;
+            }
+            
+            updateAbilityDisplay();
+        }
+
+        function initializeMissions() {
+            const missionPool = [
+                { type: 'combo', target: 10, description: 'Achieve a 10x combo', check: () => maxCombo >= 10 },
+                { type: 'combo', target: 15, description: 'Achieve a 15x combo', check: () => maxCombo >= 15 },
+                { type: 'score', target: 50, description: 'Score 50 points', check: () => score >= 50 },
+                { type: 'score', target: 100, description: 'Score 100 points', check: () => score >= 100 },
+                { type: 'weather', target: 2, description: 'Survive 2 weather events', count: 0, check: function() { return this.count >= 2; } },
+                { type: 'nojump', target: 20, description: 'Score 20 without double jumping', count: 0, check: function() { return this.count >= 20; } },
+                { type: 'ability', target: 3, description: 'Use ability 3 times', count: 0, check: function() { return this.count >= 3; } },
+                { type: 'aerial', target: 10, description: 'Avoid 10 aerial obstacles', count: 0, check: function() { return this.count >= 10; } }
+            ];
+            
+            // Select 3 random missions
+            currentMissions = [];
+            const shuffled = missionPool.sort(() => Math.random() - 0.5);
+            for (let i = 0; i < 3; i++) {
+                const mission = {...shuffled[i]};
+                mission.completed = false;
+                if (mission.count !== undefined) mission.count = 0;
+                currentMissions.push(mission);
+            }
+            
+            updateMissionsDisplay();
+        }
+
+        function updateMissionsDisplay() {
+            currentMissions.forEach((mission, index) => {
+                const element = document.getElementById(`mission${index + 1}`);
+                if (mission.completed) {
+                    element.textContent = `✓ ${mission.description}`;
+                    element.classList.add('mission-complete');
+                } else {
+                    element.textContent = `○ ${mission.description}`;
+                    element.classList.remove('mission-complete');
+                }
+            });
+        }
+
+        function checkMissionProgress(type, value) {
+            let anyCompleted = false;
+            
+            currentMissions.forEach(mission => {
+                if (mission.completed) return;
+                
+                if (mission.type === type) {
+                    if (mission.count !== undefined) {
+                        mission.count++;
+                    }
+                }
+                
+                if (mission.check()) {
+                    mission.completed = true;
+                    completedMissions++;
+                    score += 10; // Bonus points
+                    updateScore();
+                    soundManager.playMissionComplete();
+                    showEventNotification(`🎯 Mission Complete! +10 points`);
+                    anyCompleted = true;
+                }
+            });
+            
+            if (anyCompleted) {
+                updateMissionsDisplay();
+            }
+        }
+
+        function startBossFight() {
+            bossActive = true;
+            bossPhase = 0;
+            bossAttackTimer = 120; // 2 seconds before first attack
+            bossAttacks = [];
+            
+            showEventNotification('⚠️ BOSS INCOMING!');
+            soundManager.playAbility();
+        }
+
+        function updateBossFight() {
+            if (!bossActive) return;
+            
+            bossAttackTimer--;
+            
+            // Update existing attacks
+            bossAttacks.forEach((attack, index) => {
+                attack.update();
+                if (attack.isFinished()) {
+                    bossAttacks.splice(index, 1);
+                }
+                
+                if (attack.collidesWith(player)) {
+                    soundManager.playCollision();
+                    gameOver();
+                }
+            });
+            
+            // Spawn new attacks
+            if (bossAttackTimer <= 0) {
+                bossPhase++;
+                
+                if (bossPhase <= 5) { // 5 attack phases
+                    const attackType = Math.random() > 0.5 ? 'laser' : 'projectile';
+                    
+                    if (attackType === 'laser') {
+                        const x = Math.random() * (canvas.width - 200) + 100;
+                        bossAttacks.push(new BossAttack('laser', x, 0));
+                    } else {
+                        const y = Math.random() * 200 + 150;
+                        bossAttacks.push(new BossAttack('projectile', canvas.width, y));
+                    }
+                    
+                    bossAttackTimer = 180; // 3 seconds between attacks
+                } else {
+                    // Boss fight over
+                    bossActive = false;
+                    bossAttacks = [];
+                    score += 20; // Bonus for surviving boss
+                    updateScore();
+                    showEventNotification('🏆 BOSS DEFEATED! +20 points');
+                    soundManager.playMissionComplete();
+                }
+            }
+        }
+
+        function drawBoss() {
+            if (!bossActive) return;
+            
+            // Draw boss in background (horror theme creature)
+            const bossY = 50 + Math.sin(frameCount * 0.02) * 20;
+            const bossX = canvas.width - 200;
+            
+            ctx.save();
+            
+            // Boss shadow
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+            ctx.beginPath();
+            ctx.ellipse(bossX, bossY + 80, 80, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Boss body
+            const gradient = ctx.createRadialGradient(bossX, bossY, 0, bossX, bossY, 100);
+            gradient.addColorStop(0, '#8B0000');
+            gradient.addColorStop(1, '#4B0000');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.ellipse(bossX, bossY, 80, 100, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Boss eyes (glowing)
+            ctx.shadowColor = '#FF0000';
+            ctx.shadowBlur = 20;
+            ctx.fillStyle = '#FF0000';
+            ctx.beginPath();
+            ctx.arc(bossX - 25, bossY - 20, 15, 0, Math.PI * 2);
+            ctx.arc(bossX + 25, bossY - 20, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            ctx.restore();
+            
+            // Draw boss attacks
+            bossAttacks.forEach(attack => attack.draw());
+        }
+
         function updateHighScore() {
             if (score > highScore) {
                 highScore = score;
@@ -1908,11 +3552,20 @@
         }
 
         function spawnObstacle() {
-            const newObstacle = new Obstacle();
+            // Randomly choose obstacle type for variety
+            const rand = Math.random();
+            let newObstacle;
             
-            // If freeze event is active, freeze the new obstacle
-            if (activeEvent && activeEvent.type === 'freeze') {
-                newObstacle.frozen = true;
+            if (rand < 0.15) {
+                // 15% chance of aerial obstacle
+                newObstacle = new AerialObstacle();
+                checkMissionProgress('aerial');
+            } else if (rand < 0.22) {
+                // 7% chance of trap obstacle
+                newObstacle = new TrapObstacle();
+            } else {
+                // 78% chance of normal ground obstacle
+                newObstacle = new Obstacle();
             }
             
             obstacles.push(newObstacle);
@@ -1921,6 +3574,34 @@
         function checkCollisions() {
             for (let obstacle of obstacles) {
                 if (obstacle.collidesWith(player)) {
+                    // Check if it's a trap obstacle
+                    if (obstacle instanceof TrapObstacle) {
+                        obstacle.onCollision();
+                        obstacles.splice(obstacles.indexOf(obstacle), 1);
+                        soundManager.playCollision();
+                        continue;
+                    }
+                    
+                    // Check for Egg Shield
+                    if (currentStyle === 'easter' && styleAbility.shieldHits > 0) {
+                        styleAbility.shieldHits--;
+                        obstacles.splice(obstacles.indexOf(obstacle), 1);
+                        showEventNotification('🥚 Shield Blocked!');
+                        soundManager.playAbility();
+                        // Create shield particles
+                        for (let i = 0; i < 20; i++) {
+                            particles.push(new Particle(
+                                player.x + player.width / 2,
+                                player.y + player.height / 2,
+                                '#FF69B4'
+                            ));
+                        }
+                        if (styleAbility.shieldHits <= 0) {
+                            deactivateStyleAbility();
+                        }
+                        continue;
+                    }
+                    
                     // Create explosion particles on collision
                     for (let i = 0; i < 30; i++) {
                         const colorIndex = Math.floor(Math.random() * styles[currentStyle].particleColors.length);
@@ -1930,21 +3611,50 @@
                             styles[currentStyle].particleColors[colorIndex]
                         ));
                     }
+                    
+                    soundManager.playCollision();
                     gameOver();
                     return;
                 }
             }
         }
 
-        // Surprise Events System
+        // Surprise Events System (Balanced)
         function triggerRandomEvent() {
-            const events = ['slowmo', 'speedup', 'invincible', 'double_points', 'giant', 'tiny', 'freeze', 'rainbow_trail'];
-            const eventType = upcomingEventType || events[Math.floor(Math.random() * events.length)];
+            // Weighted event selection for better balance
+            const events = [
+                { type: 'double_points', weight: 30 },
+                { type: 'giant', weight: 20 },
+                { type: 'tiny', weight: 20 }
+            ];
+            
+            let eventType;
+            if (upcomingEventType) {
+                eventType = upcomingEventType;
+            } else {
+                // Weighted random selection
+                const totalWeight = events.reduce((sum, e) => sum + e.weight, 0);
+                let random = Math.random() * totalWeight;
+                for (const event of events) {
+                    random -= event.weight;
+                    if (random <= 0) {
+                        eventType = event.type;
+                        break;
+                    }
+                }
+            }
+            
+            // Balanced durations for each event
+            const durations = {
+                double_points: 600, // 10 seconds
+                giant: 480,         // 8 seconds
+                tiny: 480          // 8 seconds
+            };
             
             activeEvent = {
                 type: eventType,
-                duration: 300, // frames (5 seconds at 60fps)
-                maxDuration: 300
+                duration: durations[eventType] || 300,
+                maxDuration: durations[eventType] || 300
             };
 
             showEventNotification(eventType);
@@ -1987,6 +3697,18 @@
             let text = '';
             let color = '';
             
+            // Check if it's a simple string message (not an event type)
+            if (typeof eventType === 'string' && !['double_points', 'giant', 'tiny'].includes(eventType)) {
+                notification.innerHTML = eventType;
+                notification.style.borderColor = '#FFD700';
+                notification.style.color = '#FFD700';
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+                return;
+            }
+            
             switch(eventType) {
                 case 'slowmo':
                     gameSpeed *= 0.5;
@@ -2000,12 +3722,6 @@
                     text = 'SPEED BOOST';
                     color = '#FF6B6B';
                     break;
-                case 'invincible':
-                    player.invincible = true;
-                    emoji = '🛡️';
-                    text = 'INVINCIBLE';
-                    color = '#FFD700';
-                    break;
                 case 'double_points':
                     emoji = '💎';
                     text = 'DOUBLE POINTS';
@@ -2013,12 +3729,16 @@
                     break;
                 case 'giant':
                     player.setSize(1.8);
+                    gameSpeed *= 0.75; // Decrease player speed (obstacles move slower)
+                    obstacles.forEach(obs => obs.speed = gameSpeed);
                     emoji = '🔥';
                     text = 'GIANT MODE';
                     color = '#FF4500';
                     break;
                 case 'tiny':
                     player.setSize(0.5);
+                    gameSpeed *= 1.4; // Increase player speed (obstacles move faster)
+                    obstacles.forEach(obs => obs.speed = gameSpeed);
                     emoji = '🐭';
                     text = 'TINY MODE';
                     color = '#00CED1';
@@ -2028,11 +3748,6 @@
                     emoji = '❄️';
                     text = 'FREEZE';
                     color = '#87CEEB';
-                    break;
-                case 'rainbow_trail':
-                    emoji = '🌈';
-                    text = 'RAINBOW TRAIL';
-                    color = '#FF69B4';
                     break;
             }
             
@@ -2057,18 +3772,6 @@
                 activeEvent.duration--;
                 updateEventTimer();
                 
-                // Rainbow trail effect
-                if (activeEvent.type === 'rainbow_trail') {
-                    for (let i = 0; i < 3; i++) {
-                        const colors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#9400D3'];
-                        particles.push(new Particle(
-                            player.x + player.width / 2,
-                            player.y + player.height / 2,
-                            colors[Math.floor(Math.random() * colors.length)]
-                        ));
-                    }
-                }
-                
                 if (activeEvent.duration <= 0) {
                     // End event
                     switch(activeEvent.type) {
@@ -2078,15 +3781,15 @@
                         case 'speedup':
                             gameSpeed /= 1.5;
                             break;
-                        case 'invincible':
-                            player.invincible = false;
-                            break;
                         case 'giant':
+                            player.setSize(1); // Reset to normal size
+                            gameSpeed /= 0.75; // Restore normal speed
+                            obstacles.forEach(obs => obs.speed = gameSpeed);
+                            break;
                         case 'tiny':
                             player.setSize(1); // Reset to normal size
-                            break;
-                        case 'freeze':
-                            obstacles.forEach(obs => obs.frozen = false);
+                            gameSpeed /= 1.4; // Restore normal speed
+                            obstacles.forEach(obs => obs.speed = gameSpeed);
                             break;
                     }
                     activeEvent = null;
@@ -2100,7 +3803,7 @@
             // Show warning 2-3 seconds (120-180 frames) before giant/tiny events
             if (!activeEvent && !eventWarningShown && eventTimer >= nextEventTime - 150) {
                 if (!upcomingEventType) {
-                    const events = ['slowmo', 'speedup', 'invincible', 'double_points', 'giant', 'tiny', 'freeze', 'rainbow_trail'];
+                    const events = ['double_points', 'giant', 'tiny'];
                     upcomingEventType = events[Math.floor(Math.random() * events.length)];
                 }
                 
@@ -2124,21 +3827,21 @@
         function getWeatherForStyle() {
             // Define weather preferences for each style
             const styleWeathers = {
-                normal: ['sunny', 'rainy', 'windy'],
+                normal: ['rainy', 'windy'],
                 cyberpunk: ['rainy', 'stormy', 'windy'],
                 steampunk: ['windy', 'stormy', 'rainy'],
                 medieval: ['stormy', 'windy', 'rainy'],
-                rainbow: ['sunny', 'rainy', 'windy'],
+                rainbow: ['rainy', 'windy'],
                 dark: ['stormy', 'rainy'],
-                easter: ['sunny', 'windy'],
+                easter: ['windy'],
                 glitch: ['stormy', 'windy', 'rainy'],
                 horror: ['stormy', 'rainy'],
-                eco: ['sunny', 'rainy', 'windy'],
-                fantasy: ['sunny', 'snowy', 'windy'],
-                basic: ['sunny', 'rainy', 'windy', 'snowy', 'stormy']
+                eco: ['rainy', 'windy'],
+                fantasy: ['snowy', 'windy'],
+                basic: ['rainy', 'windy', 'snowy', 'stormy']
             };
             
-            const possibleWeathers = styleWeathers[currentStyle] || ['sunny', 'rainy', 'snowy', 'windy', 'stormy'];
+            const possibleWeathers = styleWeathers[currentStyle] || ['rainy', 'snowy', 'windy', 'stormy'];
             return possibleWeathers[Math.floor(Math.random() * possibleWeathers.length)];
         }
         
@@ -2161,14 +3864,9 @@
             let color = '';
             
             switch(weatherType) {
-                case 'sunny':
-                    emoji = '☀️';
-                    text = 'SUNNY DAY';
-                    color = '#FFD700';
-                    break;
                 case 'rainy':
                     emoji = '🌧️';
-                    text = 'RAIN STORM';
+                    text = 'RAIN';
                     color = '#4682B4';
                     break;
                 case 'snowy':
@@ -2225,14 +3923,16 @@
                         }
                         break;
                     case 'windy':
-                        if (Math.random() > 0.7) {
+                        // More frequent and visible wind particles
+                        if (Math.random() > 0.5) {
                             weatherParticles.push({
                                 x: -10,
-                                y: Math.random() * canvas.height * 0.6,
-                                speedX: Math.random() * 4 + 6,
-                                speedY: Math.random() * 2 - 1,
-                                size: Math.random() * 3 + 2,
-                                type: 'wind'
+                                y: Math.random() * canvas.height * 0.7,
+                                speedX: Math.random() * 6 + 8,
+                                speedY: Math.random() * 3 - 1.5,
+                                size: Math.random() * 4 + 3,
+                                type: 'wind',
+                                length: Math.random() * 30 + 20
                             });
                         }
                         break;
@@ -2249,19 +3949,9 @@
                             });
                         }
                         // Lightning flash
-                        if (Math.random() > 0.98) {
+                        if (Math.random() > 0.985) {
                             ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
                             ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        }
-                        break;
-                    case 'sunny':
-                        // Add sparkle effects
-                        if (Math.random() > 0.95) {
-                            particles.push(new Particle(
-                                Math.random() * canvas.width,
-                                Math.random() * 200,
-                                '#FFD700'
-                            ));
                         }
                         break;
                 }
@@ -2312,11 +4002,18 @@
                         ctx.fill();
                         break;
                     case 'wind':
-                        ctx.strokeStyle = 'rgba(176, 196, 222, 0.4)';
+                        ctx.strokeStyle = 'rgba(176, 196, 222, 0.6)';
                         ctx.lineWidth = particle.size;
                         ctx.beginPath();
                         ctx.moveTo(particle.x, particle.y);
-                        ctx.lineTo(particle.x + 20, particle.y);
+                        ctx.lineTo(particle.x + (particle.length || 25), particle.y);
+                        ctx.stroke();
+                        // Add additional wind streaks for more impact
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                        ctx.lineWidth = particle.size * 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x + 5, particle.y - 3);
+                        ctx.lineTo(particle.x + (particle.length || 25) - 5, particle.y - 3);
                         ctx.stroke();
                         break;
                 }
@@ -2338,12 +4035,13 @@
                     case 'speedup':
                         gameSpeed /= 1.5;
                         break;
-                    case 'invincible':
-                        player.invincible = false;
-                        break;
                     case 'giant':
+                        player.setSize(1); // Reset to normal size
+                        gameSpeed /= 0.75; // Restore normal speed
+                        break;
                     case 'tiny':
                         player.setSize(1); // Reset to normal size
+                        gameSpeed /= 1.4; // Restore normal speed
                         break;
                     case 'freeze':
                         obstacles.forEach(obs => obs.frozen = false);
@@ -2378,8 +4076,9 @@
             upcomingEventType = null;
             eventWarningShown = false;
             
-            // Set initial random event time
-            nextEventTime = eventIntervalMin + Math.floor(Math.random() * (eventIntervalMax - eventIntervalMin));
+            // Set initial random event time with enhanced RNG
+            const eventSeed = Math.random() * 0.5 + 0.5; // Random multiplier between 0.5-1.0
+            nextEventTime = Math.floor(eventIntervalMin + (Math.random() * (eventIntervalMax - eventIntervalMin) * eventSeed));
             
             // Clear any active events
             if (activeEvent) {
@@ -2389,12 +4088,30 @@
             
             // Reset weather system
             weatherTimer = 0;
-            nextWeatherTime = weatherIntervalMin + Math.floor(Math.random() * (weatherIntervalMax - weatherIntervalMin));
+            const weatherSeed = Math.random() * 0.6 + 0.4; // Random multiplier between 0.4-1.0
+            nextWeatherTime = Math.floor(weatherIntervalMin + (Math.random() * (weatherIntervalMax - weatherIntervalMin) * weatherSeed));
             if (activeWeather) {
                 activeWeather = null;
                 document.getElementById('weatherNotification').style.display = 'none';
             }
             weatherParticles = [];
+            
+            // Reset abilities
+            styleAbility = {
+                ready: true,
+                cooldown: 0,
+                cooldownMax: 480,
+                active: false,
+                duration: 0
+            };
+            
+            // Reset missions
+            completedMissions = 0;
+            initializeMissions();
+            
+            // Reset boss
+            bossActive = false;
+            bossAttacks = [];
             
             obstacles = [];
             particles = [];
@@ -2405,6 +4122,7 @@
             updateScore();
             resetCombo();
             updateDoubleJumpDisplay();
+            updateAbilityDisplay();
         }
 
         function showRestartNotification(success = true) {
@@ -2442,12 +4160,24 @@
 
         function startGame() {
             try {
+                // Ensure sound is initialized and start theme music if enabled
+                if (!soundManager.initialized) {
+                    soundManager.init();
+                }
+                
+                if (soundManager.musicEnabled && !soundManager.currentMusic) {
+                    soundManager.startThemeMusic(currentStyle);
+                }
+                
                 const isRestart = currentState === GameState.PLAYING || currentState === GameState.PAUSED || currentState === GameState.GAME_OVER;
                 resetGame();
                 currentState = GameState.PLAYING;
                 document.getElementById('mainMenu').classList.add('hidden');
                 document.getElementById('gameOverMenu').classList.add('hidden');
                 document.getElementById('pauseMenu').classList.add('hidden');
+                
+                // Hide style switcher during gameplay
+                document.getElementById('styleSwitcher').classList.remove('show-in-menu');
                 
                 // Only show notification if it's a restart, not initial game start
                 if (isRestart) {
@@ -2472,12 +4202,13 @@
                     case 'speedup':
                         gameSpeed /= 1.5;
                         break;
-                    case 'invincible':
-                        player.invincible = false;
-                        break;
                     case 'giant':
+                        player.setSize(1); // Reset to normal size
+                        gameSpeed /= 0.75; // Restore normal speed
+                        break;
                     case 'tiny':
                         player.setSize(1); // Reset to normal size
+                        gameSpeed /= 1.4; // Restore normal speed
                         break;
                     case 'freeze':
                         obstacles.forEach(obs => obs.frozen = false);
@@ -2498,12 +4229,27 @@
             document.getElementById('mainMenu').classList.remove('hidden');
             document.getElementById('gameOverMenu').classList.add('hidden');
             document.getElementById('pauseMenu').classList.add('hidden');
+            
+            // Show style switcher in menu
+            document.getElementById('styleSwitcher').classList.add('show-in-menu');
         }
 
         // ==========================================
         // GAME LOOP
         // ==========================================
-        function gameLoop() {
+        function gameLoop(currentTime) {
+            // FPS limiting
+            if (targetFPS > 0) {
+                deltaTime = currentTime - lastFrameTime;
+                
+                if (deltaTime < frameInterval) {
+                    requestAnimationFrame(gameLoop);
+                    return;
+                }
+                
+                lastFrameTime = currentTime - (deltaTime % frameInterval);
+            }
+            
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -2555,6 +4301,81 @@
                 // Update weather
                 updateWeather();
                 
+                // Update ability cooldown and duration
+                if (styleAbility.active) {
+                    styleAbility.duration--;
+                    
+                    // Handle Fantasy invincibility duration separately
+                    if (currentStyle === 'fantasy' && styleAbility.invincibilityDuration !== undefined) {
+                        styleAbility.invincibilityDuration--;
+                        if (styleAbility.invincibilityDuration <= 0) {
+                            player.invincible = false;
+                            delete styleAbility.invincibilityDuration;
+                        }
+                    }
+                    
+                    if (styleAbility.duration <= 0) {
+                        deactivateStyleAbility();
+                    }
+                    updateAbilityDisplay();
+                } else if (styleAbility.cooldown > 0) {
+                    styleAbility.cooldown--;
+                    if (styleAbility.cooldown === 0) {
+                        styleAbility.ready = true;
+                    }
+                    updateAbilityDisplay();
+                }
+                
+                // Handle toggle abilities
+                if (styleAbility.toggleActive) {
+                    if (currentStyle === 'horror') {
+                        // Blood Drain - consume 1 point per second
+                        if (frameCount % 60 === 0) {
+                            if (score > 0) {
+                                score--;
+                                document.getElementById('scoreDisplay').textContent = `Score: ${score}`;
+                            } else {
+                                // Not enough points, disable
+                                styleAbility.toggleActive = false;
+                                player.invincible = false;
+                                showEventNotification('⚠️ Not enough points!');
+                                updateAbilityDisplay();
+                            }
+                        }
+                    }
+                }
+                
+                // Update projectiles
+                projectiles.forEach((proj, index) => {
+                    proj.update();
+                    proj.draw();
+                    
+                    // Check collision with obstacles
+                    for (let i = obstacles.length - 1; i >= 0; i--) {
+                        if (proj.checkCollision(obstacles[i])) {
+                            // Destroy obstacle
+                            obstacles.splice(i, 1);
+                            proj.active = false;
+                            score += 2; // Bonus points
+                            soundManager.playCollision();
+                            // Create explosion particles
+                            for (let j = 0; j < 15; j++) {
+                                particles.push(new Particle(
+                                    proj.x,
+                                    proj.y,
+                                    proj.color
+                                ));
+                            }
+                            break;
+                        }
+                    }
+                    
+                    // Remove inactive projectiles
+                    if (!proj.active) {
+                        projectiles.splice(index, 1);
+                    }
+                });
+                
                 // Update double jump cooldown
                 if (doubleJumpCooldown > 0) {
                     doubleJumpCooldown--;
@@ -2563,10 +4384,29 @@
                     }
                     updateDoubleJumpDisplay();
                 }
+                
+                // Check for boss trigger (every 200 points)
+                if (score > 0 && score % 200 === 0 && !bossActive && frameCount % 60 === 0) {
+                    // Only trigger once per milestone
+                    if (score !== lastBossScore) {
+                        startBossFight();
+                        lastBossScore = score;
+                    }
+                }
+                
+                // Update boss fight
+                if (bossActive) {
+                    updateBossFight();
+                }
 
                 // Update and draw player
                 player.update();
                 player.draw();
+                
+                // Draw boss if active
+                if (bossActive) {
+                    drawBoss();
+                }
 
                 // Spawn obstacles
                 obstacleSpawnTimer++;
@@ -2575,19 +4415,17 @@
                     obstacleSpawnTimer = 0;
                 }
 
-                // Update and draw obstacles
-                obstacles.forEach((obstacle, index) => {
-                    // Check if obstacle is frozen
-                    if (!obstacle.frozen) {
-                        obstacle.update();
-                    }
+                // Update and draw obstacles (optimized)
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    const obstacle = obstacles[i];
+                    obstacle.update();
                     obstacle.draw();
 
                     // Remove off-screen obstacles
                     if (obstacle.isOffScreen()) {
-                        obstacles.splice(index, 1);
+                        obstacles.splice(i, 1);
                     }
-                });
+                }
 
                 // Check collisions
                 checkCollisions();
@@ -2633,6 +4471,13 @@
                     startGame();
                 }
             }
+            
+            // Activate style ability
+            if (e.code === 'KeyE') {
+                if (currentState === GameState.PLAYING) {
+                    activateStyleAbility();
+                }
+            }
         });
 
         canvas.addEventListener('click', () => {
@@ -2666,6 +4511,12 @@
         styleOptions.forEach(option => {
             option.addEventListener('click', (e) => {
                 e.stopPropagation();
+                
+                // Only allow theme changes in menu
+                if (currentState !== GameState.MENU) {
+                    return;
+                }
+                
                 const style = option.getAttribute('data-style');
                 currentStyle = style;
                 
@@ -2677,6 +4528,11 @@
                 flyingObjects = [];
                 for (let i = 0; i < 8; i++) {
                     flyingObjects.push(new FlyingObject());
+                }
+                
+                // Change theme music
+                if (soundManager.initialized && currentState === GameState.PLAYING) {
+                    soundManager.startThemeMusic(currentStyle);
                 }
                 
                 styleMenu.classList.add('hidden');
@@ -2711,8 +4567,130 @@
             document.getElementById('versionModal').classList.remove('hidden');
         });
         
-        document.getElementById('closeVersionBtn').addEventListener('click', () => {
+        document.getElementById('versionCloseX').addEventListener('click', () => {
             document.getElementById('versionModal').classList.add('hidden');
+        });
+
+        // Settings menu functionality
+        const settingsMenu = document.getElementById('settingsMenu');
+        const menuSettingsBtn = document.getElementById('menuSettingsBtn');
+        const pauseSettingsBtn = document.getElementById('pauseSettingsBtn');
+        const settingsCloseBtn = document.getElementById('settingsCloseBtn');
+        const musicToggle = document.getElementById('musicToggle');
+        const soundToggle = document.getElementById('soundToggle');
+        const musicSlider = document.getElementById('musicSlider');
+        const soundSlider = document.getElementById('soundSlider');
+        const musicValue = document.getElementById('musicValue');
+        const soundValue = document.getElementById('soundValue');
+        const fpsSelector = document.getElementById('fpsSelector');
+
+        // Initialize settings UI from saved values
+        function initializeSettingsUI() {
+            musicSlider.value = Math.round(soundManager.musicVolume * 100);
+            soundSlider.value = Math.round(soundManager.sfxVolume * 100);
+            musicValue.textContent = musicSlider.value;
+            soundValue.textContent = soundSlider.value;
+            
+            if (soundManager.musicEnabled) {
+                musicToggle.classList.add('active');
+            } else {
+                musicToggle.classList.remove('active');
+            }
+            
+            if (soundManager.sfxEnabled) {
+                soundToggle.classList.add('active');
+            } else {
+                soundToggle.classList.remove('active');
+            }
+            
+            // Initialize FPS selector
+            fpsSelector.value = targetFPS.toString();
+        }
+
+        // Open settings from main menu
+        menuSettingsBtn.addEventListener('click', () => {
+            initializeSettingsUI();
+            settingsMenu.classList.remove('hidden');
+        });
+
+        // Open settings from pause menu
+        pauseSettingsBtn.addEventListener('click', () => {
+            initializeSettingsUI();
+            settingsMenu.classList.remove('hidden');
+        });
+
+        // Close settings
+        settingsCloseBtn.addEventListener('click', () => {
+            settingsMenu.classList.add('hidden');
+        });
+
+        // Music toggle
+        musicToggle.addEventListener('click', () => {
+            soundManager.toggleMusic(!soundManager.musicEnabled);
+            musicToggle.classList.toggle('active');
+            
+            // Start or stop music based on toggle
+            if (soundManager.initialized) {
+                if (soundManager.musicEnabled && currentState === GameState.PLAYING) {
+                    soundManager.startThemeMusic(currentStyle);
+                } else {
+                    soundManager.stopMusic();
+                }
+            }
+        });
+
+        // Sound toggle
+        soundToggle.addEventListener('click', () => {
+            soundManager.toggleSfx(!soundManager.sfxEnabled);
+            soundToggle.classList.toggle('active');
+        });
+
+        // Music slider
+        musicSlider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            musicValue.textContent = value;
+            soundManager.setMusicVolume(value / 100);
+        });
+
+        // Sound slider
+        soundSlider.addEventListener('input', (e) => {
+            const value = e.target.value;
+            soundValue.textContent = value;
+            soundManager.setSfxVolume(value / 100);
+        });
+
+        // Keyboard control for sliders
+        musicSlider.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const currentValue = parseInt(musicSlider.value);
+                const newValue = e.key === 'ArrowLeft' ? currentValue - 1 : currentValue + 1;
+                musicSlider.value = Math.max(0, Math.min(100, newValue));
+                musicValue.textContent = musicSlider.value;
+                soundManager.setMusicVolume(musicSlider.value / 100);
+            }
+        });
+
+        soundSlider.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const currentValue = parseInt(soundSlider.value);
+                const newValue = e.key === 'ArrowLeft' ? currentValue - 1 : currentValue + 1;
+                soundSlider.value = Math.max(0, Math.min(100, newValue));
+                soundValue.textContent = soundSlider.value;
+                soundManager.setSfxVolume(soundSlider.value / 100);
+            }
+        });
+
+        // FPS selector
+        fpsSelector.addEventListener('change', (e) => {
+            targetFPS = parseInt(e.target.value);
+            frameInterval = targetFPS === 0 ? 0 : 1000 / targetFPS;
+            localStorage.setItem('targetFPS', targetFPS);
+            
+            // Show notification
+            const fpsText = targetFPS === 0 ? 'Unlimited' : `${targetFPS} FPS`;
+            showEventNotification(`🎯 FPS set to ${fpsText}`);
         });
 
         // ==========================================
@@ -2720,7 +4698,27 @@
         // ==========================================
         updateHighScore();
         updateDoubleJumpDisplay();
-        gameLoop();
+        
+        // Initialize sound system and auto-play music on page load
+        function initializeSound() {
+            if (!soundManager.initialized) {
+                soundManager.init();
+                if (soundManager.musicEnabled) {
+                    soundManager.startThemeMusic(currentStyle);
+                }
+            }
+        }
+        
+        // Try to initialize sound immediately
+        initializeSound();
+        
+        // Also initialize on first user interaction (for browsers that block auto-play)
+        document.addEventListener('click', initializeSound, { once: true });
+        document.addEventListener('keydown', initializeSound, { once: true });
+        document.addEventListener('touchstart', initializeSound, { once: true });
+        
+        // Start game loop with initial timestamp
+        gameLoop(performance.now());
 
         // Make canvas responsive
         function resizeCanvas() {
