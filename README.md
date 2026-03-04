@@ -1,6 +1,6 @@
 # 🎮 SKY RUNNER - Ultimate Edition
 
-![Version](https://img.shields.io/badge/version-10.3-blue.svg)
+![Version](https://img.shields.io/badge/version-13.0-blue.svg)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
@@ -12,7 +12,7 @@
 
 ## 🌟 Overview
 
-**Sky Runner** is a fully-featured endless runner game built entirely with vanilla HTML5, CSS3, and JavaScript. Jump, survive, and conquer as you dodge obstacles, collect points, utilize unique theme-based abilities, complete missions, fight bosses, and experience dynamic weather effects across 12 unique visual themes!
+**Sky Runner** is a fully-featured endless runner game built entirely with vanilla HTML5, CSS3, and JavaScript. Jump, survive, and conquer as you dodge obstacles, collect points, utilize unique theme-based abilities, complete missions, fight bosses, experience dynamic weather effects, face challenging screen events, and enjoy stunning procedural VFX (style-specific procedural generation with Strategy pattern for 8 themes, parallax backgrounds, screen shake, hit-stop, neon glow, chromatic aberration) across 12 unique visual themes — all rendered 100% procedurally with zero external assets!
 
 ### 🏆 Jump, Survive, Conquer!
 
@@ -21,16 +21,18 @@
 ## ✨ Key Features
 
 ### 🎮 Core Gameplay
+- **Loading Screen**: Beautiful animated loading screen with progress tracking and performance optimization
 - **Endless Runner Mechanics**: Infinite procedural obstacle generation
 - **Smooth Physics**: Gravity-based jumping with realistic acceleration
 - **Double Jump System**: 5 charges with 10-second cooldown
 - **Active Abilities**: 12 unique theme-specific skills (activated with E key)
 - **Settings Menu**: Customizable music, sound effects, and FPS with volume controls
 - **FPS Control**: Adjustable frame rate (30, 60, 90, 120, Unlimited)
-- **Performance Optimization**: Smooth gameplay with optimized rendering
+- **Performance Optimization**: Smooth gameplay with optimized rendering and adaptive loading
 - **Multiple Obstacle Types**: Ground obstacles, aerial enemies, and traps
 - **Boss Battles**: Epic boss fights every 200 points with laser and projectile attacks
-- **Mission System**: 3 random objectives per run with bonus rewards
+- **Mission System**: 3 random objectives per run with bonus rewards and failure validation
+- **Screen Events (Enhanced v11.1)**: Post-50 point visual challenge events with countdown warnings and global cooldown
 - **Combo System**: Chain obstacle dodges for bonus points
 - **Progressive Difficulty**: Speed and spawn rate increase with score
 - **High Score Tracking**: Persistent localStorage-based leaderboard
@@ -81,17 +83,95 @@ Each theme has a unique ability activated with **E key**:
 **Event timing**: 20-40s intervals, 6-10s active duration
 **Weather timing**: 25-50s intervals, 30s active duration
 
+### � Screen Events System (NEW in v11.0)
+Advanced visual challenge events that activate **only after scoring 50 points**:
+
+#### Event Types:
+- **🌑 The Dark Descends**
+  - Gradual screen darkening to 10% brightness over 2 seconds
+  - Stays dark for 3 seconds total
+  - Smooth recovery to normal over 1.5 seconds
+  - Total duration: ~4.5 seconds
+  
+- **⚡ Flashbang**
+  - Instant white screen flash at 100% brightness
+  - Lasts for 1.5 seconds
+  - Gradual fade recovery over 1.5 seconds
+  - Total duration: ~3 seconds
+
+#### Event Mechanics:
+- **⏰ Countdown Warning (NEW v11.1)**: 3-second countdown (3...2...1...) displays before event triggers
+- **⚠️ Visual Warning**: Red warning box with gold border appears center-screen during countdown
+- **🎭 Dramatic Effect**: Each number pulses and scales with smooth animation
+- **Activation Requirement**: Score must be ≥ 50 points
+- **Global Cooldown**: 60 seconds shared between both events
+- **Random Timing**: Events trigger randomly every 30-60 seconds (after cooldown)
+- **No Overlap**: Only one screen event can be active at a time
+- **Challenge Factor**: Tests player reaction and adaptation skills
+- **Fair Warning**: Countdown gives players time to prepare for the effect
+
+### 🎯 Advanced Mission System (Enhanced in v11.0)
+Dynamic mission system with **success tracking and failure validation**:
+
+#### Mission Features:
+- **3 Random Objectives** per game session
+- **Bonus Rewards**: +10 points per completed mission
+- **Visual Feedback**: ✓ for completed, ○ for active, ✗ for failed
+- **Real-time Validation**: Continuous checking of mission conditions
+
+#### Mission Types:
+1. **Combo Challenges** - Achieve 10x or 15x combo
+2. **Score Milestones** - Reach 50 or 100 points
+3. **Weather Survival** - Survive 2 weather events
+4. **No Double Jump** - Score 20 points without using double jump
+   - **Failure Condition**: Using double jump before 20 points
+   - **Visual Indicator**: Text turns gray with strikethrough on failure
+5. **Ability Master** - Use special ability 3 times
+6. **Aerial Avoidance** - Dodge 10 aerial obstacles
+
+#### Mission Failure System:
+- **Smart Validation**: AI continuously monitors failure conditions
+- **Instant Feedback**: Notification appears when mission fails
+- **UI Updates**: Failed missions show with ✗ and gray strikethrough text
+- **No Retry**: Failed missions cannot be recovered in the same run
+
 ### 🎨 Visual Effects
+
+#### Style-Specific Procedural Renderers (12 Themes)
+| Theme | Sky | Mountains/Mid | Ground | Obstacles | Aerials | Weather |
+|-------|-----|---------------|--------|-----------|---------|---------|
+| **✨ Normal** | Glowing sun with animated rays, fluffy arc clouds | 3-layer rolling mountains | Earthy ground with grass & pebbles | Jagged moss-covered rocks | Flapping birds with beak & tail | Soft blue rain & twinkling snow |
+| **🌆 Cyberpunk** | Retrowave sun with horizontal slices | Neon-window skyscrapers (cyan/magenta) | Perspective grid with glow edge | Laser fence pillars with bloom | Angular diamond drones with LEDs | Acid rain (neon glow) & glitch snow |
+| **⚙️ Steampunk** | Rotating gears with teeth & hub | Rising steam plumes, chimney skyline | Metal plates with rivets & track rail | Brass pipes with flanges & valve wheel | Hot air balloons with basket | Smog/soot particles |
+| **🏰 Medieval** | Gothic castle towers with crenellations | Low-lying fog with drifting wisps | Cobblestone ground | Wooden X-barricades with iron spikes | Leathery bats with red eyes | Heavy dark rain & lightning |
+| **🌈 Rainbow** | Flowing sine waves (7-color spectrum, additive blend) | Prismatic light beams | Rainbow gradient with HSL sparkle dots | Crystalline spikes with rainbow gradient | Rotating diamond prisms with HSL aura | Confetti rectangles |
+| **🌙 Dark** | Dead twisted tree silhouettes with branching | Near-black jagged horizon, dense fog & wisps | Pitch-black with faint cracks | Pure-black thorn clusters with eerie outline | Shadowy wraiths with glowing white eyes | Falling grey ash |
+| **🥚 Easter** | Rolling mint-green hills + giant Easter eggs (zigzag/polka patterns) | Small 5-petal flowers | Pastel-green gradient with grass tufts & daisies | Chocolate bunnies & cracked eggshells | Yellow chicks & painted eggs with bands | Spring petals (bezier teardrops) |
+| **⚡ Glitch** | Shifting barcode bars with chromatic aberration (screen composite) | Fragmented data blocks (magenta/green/cyan) | Dark with corrupted color stripes & pixel edge | Data blocks with bitten chunks & chromatic offset | Morphing polygons (3-7 vertices, reshuffling) | Digital static lines |
+| **👻 Horror** | Pitch-black/crimson sky with massive Blood Moon & craters | Drifting red fog wisps | Crimson veiny cracks & blood pooling | Fleshy spikes & skeletal hands with vein strokes | Giant eyeballs with tracking iris & optic nerves | Thick dark-red blood rain |
+| **🌿 Natural** | God ray sunbeams (lighter composite), recursive fractal trees | Lush sine-bump treeline silhouettes | Rich earth with dense grass & wildflowers | Giant mushrooms (spotted cap) & thorny vines | Drifting leaves & dandelion seeds with flutter | Falling leaves with wide sine sway |
+| **✨ Fantasy** | Purple-magenta twilight, Aurora Borealis (4 sine wave layers), floating islands | Mystical purple mountains with peak sparkle | Magical purple ground with glowing runes | Amethyst crystal clusters with shadowBlur glow | Glowing wisps/fairies with soft aura & trail | Pulsing four-pointed star sparkles |
+| **📦 Basic** | Pure white sky | Black step-silhouette horizon | Solid black with perspective checkerboard | Pure black triangles/rectangles, white outline | Hollow wireframe diamonds & isometric cubes | CRT static noise (1-frame black lines) |
+
+#### Core VFX Systems
 - **Particle System**: Dynamic particles for jumps, landings, combos
 - **Squash & Stretch**: Character animation on jumps/landings
 - **Decorative Clouds**: 10 animated background clouds
 - **Flying Objects**: Theme-specific decorations (birds, drones, dragons, fairies, etc.)
-- **Weather Particles**: Real-time weather visual effects
+- **Weather Particles**: Real-time weather visual effects with style-specific rendering
+- **Screen Effects**: Full-screen overlay animations for events
 - **Smooth Animations**: 60 FPS with requestAnimationFrame
 - **Projectile System**: Bullets and laser attacks for abilities and bosses
+- **3-Layer Parallax**: Sky → Mountains → Ground with independent scroll speeds
+- **Screen Shake**: Camera shake with decaying intensity on 5 trigger types
+- **Hit-Stop**: 4-frame physics freeze on projectile kills
+- **Chromatic Aberration**: Red/cyan offset post-processing (persistent on Glitch, burst on death)
+- **Neon Glow**: Additive blending for cyberpunk/glitch/rainbow themes
+- **Player Ribbon Trail**: 15-point fading polyline with neon glow on select themes
 
 ### 🎯 Advanced Features
-- **Mission System**: 3 random objectives per run with bonus point rewards
+- **Mission System**: 3 random objectives with success/failure validation and bonus rewards
+- **Screen Events**: Post-50 point visual challenge system with global cooldown
 - **Boss Battles**: Epic boss fights every 200 points with health bars
 - **Multiple Obstacle Types**: Ground obstacles, aerial enemies (3 heights), and traps
 - **Sound System**: Theme-based background music and comprehensive SFX library
@@ -168,24 +248,30 @@ Web_App_Testing/
 ### Architecture
 ```javascript
 // Main Classes
-- Player          // 70x70px character with physics and abilities
-- Obstacle        // Procedurally generated obstacles (ground, aerial, traps)
-- Boss            // Epic boss fights with health and attack patterns
-- Projectile      // Bullets and lasers for abilities and boss attacks
-- Particle        // Visual effect particles
-- Cloud           // Background decoration
-- FlyingObject    // Theme-based flying decorations
-- SoundManager    // Audio system with music and SFX
+- Player            // 70x70px character with physics, abilities, and ribbon trail
+- Obstacle          // Procedurally generated obstacles (ground, aerial, traps) with neon glow
+- Boss              // Epic boss fights with health and attack patterns
+- Projectile        // Bullets and lasers with energy trail VFX
+- Particle          // Visual effect particles
+- Cloud             // Background decoration
+- FlyingObject      // Theme-based flying decorations
+- SoundManager      // Audio system with music and SFX
+- BackgroundManager // 3-layer procedural parallax backgrounds (sky/mountains/ground)
+- FXManager         // Screen shake, hit-stop, and chromatic aberration system
+- GroundSplash      // Rain impact splash particles
+- StyleRenderers    // Strategy pattern: per-style draw methods (all 12 themes)
 
 // Game Systems
-- Physics Engine  // Gravity, collision detection
-- Event System    // 3 balanced surprise events with RNG timing
-- Weather System  // 4 weather types with style theming
-- Mission System  // 3 random objectives with bonus rewards
-- Ability System  // 12 unique theme-specific active skills
-- Style Manager   // 12 theme configurations
-- State Machine   // Menu/Playing/Paused/GameOver
-- Boss System     // Periodic boss fights every 200 points
+- Physics Engine    // Gravity, collision detection
+- Event System      // 3 balanced surprise events with RNG timing
+- Weather System    // 4 weather types with style theming
+- Mission System    // 3 random objectives with bonus rewards
+- Ability System    // 12 unique theme-specific active skills
+- Style Manager     // 12 theme configurations
+- State Machine     // Menu/Playing/Paused/GameOver
+- Boss System       // Periodic boss fights every 200 points
+- VFX Pipeline      // Parallax, additive blending, screen shake, hit-stop, chromatic aberration
+- Style Rendering   // Strategy pattern delegates draw() per currentStyle with graceful fallback
 ```
 
 ### Performance
@@ -209,20 +295,98 @@ Web_App_Testing/
 
 ### Feature Count
 - **12** Visual Themes (each with unique abilities)
+- **12** Style-Specific Procedural Renderers (all 12 themes: normal, cyberpunk, steampunk, medieval, rainbow, dark, easter, glitch, horror, eco, fantasy, basic)
+- **6** Per-Style Render Methods (sky, mountains, ground, obstacle, aerial, weather)
 - **3** Balanced Surprise Events
 - **4** Weather Types
+- **3** Parallax Background Layers
 - **10** Background Clouds
 - **8** Flying Objects
 - **5** Game States
 - **3** Mission Objectives per run
 - **3** Obstacle Types (ground, aerial, traps)
 - **100+** Particle effects simultaneously
+- **5** Screen Shake trigger types
+- **1** Hit-Stop system for projectile kills
+- **1** Chromatic Aberration post-process effect
 
 ---
 
 ## 📜 Version History
 
-### v10.3 - "Performance & Optimization" (Current)
+### v13.0 - "Style-Specific Procedural Generation" (Current)
+- 🏗️ **Strategy Pattern Architecture**: New `StyleRenderers` object — all 12 style keys provide `drawSky`, `drawMountains`, `drawGround`, `drawObstacle`, `drawAerial`, `drawWeather` methods
+- 🌄 **Normal Theme**: Glowing sun with animated rays, fluffy arc clouds, 3-layer rolling mountains, earthy ground with grass & pebbles, jagged rock obstacles with moss, flapping birds with beak & tail, soft blue rain & twinkling snow
+- 🌃 **Cyberpunk Theme**: Retrowave sun with horizontal slices, neon-window skyscrapers (cyan/magenta), perspective grid ground with glow edge, laser fence pillar obstacles with bloom, angular diamond drones with spinning rotors & LED blink, acid rain (neon green/pink glow) & glitch snow squares
+- ⚙️ **Steampunk Theme**: Rotating gears with teeth & hub (ctx.rotate), rising steam plumes, industrial chimney skyline, metal plate ground with rivets & track rail, brass pipe obstacles with flanges/rivets/valve wheel, hot air balloon aerials with striped envelope & basket, smog/soot weather
+- 🏰 **Medieval Theme**: Gothic castle tower silhouettes with crenellations & pointed roofs, low-lying fog with drifting wisps, cobblestone ground, wooden X-barricade obstacles with iron spike tips & wood grain, leathery bat aerials with pointed wings/red eyes/ears, heavy dark rain with lightning flashes
+- 🌈 **Rainbow Theme**: Flowing 7-color spectrum sine waves with additive blending, prismatic light beams, rainbow gradient ground with HSL sparkle dots, crystalline spike obstacles with rainbow gradient & glow outline, rotating diamond prism aerials with HSL aura, confetti weather
+- 🌙 **Dark Theme**: Dead twisted tree silhouettes with recursive branching, faint moon glow, near-black jagged horizon with dense fog & drifting wisps, pitch-black ground with faint cracks, pure-black thorn cluster obstacles with eerie white outline, shadowy wraith aerials with glowing white eyes, falling grey ash weather
+- 🥚 **Easter Theme**: Rolling mint-green hills with giant Easter eggs (clipped zigzag/polka patterns), small 5-petal flowers, pastel-green gradient ground with grass tufts & daisies, chocolate bunny & cracked eggshell obstacles, yellow chick & painted egg aerials, spring petal weather (bezier teardrops)
+- ⚡ **Glitch Theme**: Shifting barcode bars with cyan/red chromatic aberration (screen composite), fragmented data blocks in magenta/green/cyan, dark ground with corrupted color stripes & pixel edge, data-block obstacles with bitten chunks & chromatic offset, morphing polygon aerials (3-7 vertices reshuffling), digital static weather
+- � **Horror Theme**: Pitch-black/deep crimson gradient sky with massive radial-gradient Blood Moon & craters, jagged overlapping thorn-wasteland silhouettes, drifting red fog wisps, veiny cracked crimson ground with blood pooling patches, fleshy spike & skeletal hand obstacles with vein strokes, floating giant eyeball aerials with tracking iris/pupil & trailing bezier optic nerves, thick dark-red blood rain
+- 🌿 **Eco (Natural) Theme**: God ray sunbeams with `lighter` composite, distant recursive fractal trees (ctx.scale/rotate branching with leaf clusters), lush sine-bump treeline silhouettes, rich earthy ground with dense swaying quadratic grass & scattered wildflowers, giant mushroom (spotted red bezier cap & white stem) & thorny vine obstacles, drifting leaf & dandelion seed aerials with flutter rotation, falling leaf weather with wide sine sway
+- ✨ **Fantasy Theme**: Deep purple-magenta twilight gradient sky, 4-layer Aurora Borealis (thick overlapping sine waves in cyan/purple/pink with `lighter` blending), floating islands with flat grassy tops & jagged rocky bottoms & tiny trees, mystical purple mountains with peak sparkle shimmer, magical purple ground with glowing rune inscriptions, amethyst crystal cluster obstacles with shadowBlur inner glow, glowing wisp/fairy aerials with massive soft aura & trailing particles, pulsing four-pointed star sparkle weather
+- 📦 **Basic Theme**: Pure white (#FFFFFF) sky, stark black step-silhouette horizon, solid black ground with perspective checkerboard floor (converging diagonal lines), pure black triangle/rectangle obstacles with thick white outline & cross-hatch detail, hollow wireframe diamond & isometric cube aerials with dashed back edges, CRT screen-tearing static noise weather (1-frame horizontal black lines)
+- 🎯 **Zero Physics Changes**: Only `draw()` methods modified; constructors, `update()`, `collidesWith()`, bounding boxes, scoring untouched
+- 🎨 **100% Procedural Canvas**: All new art uses pure Canvas API (arcs, gradients, bezier curves, rotate transforms, recursive fractal branching, clip, screen composite)
+
+### v12.0 - "Visual and Game Feel Big Update"
+- 🏔️ **Procedural Parallax Backgrounds**: 3-layer scrolling system (sky/stars/moon, mountains, ground) replacing static backgrounds
+- 🌙 **Dynamic Moon & Stars**: Radial-gradient moon with theme-specific colors (cyberpunk = magenta, horror = blood red, dark = pale) and twinkling stars on dark themes
+- ⛰️ **Procedural Mountain Ranges**: Two noise-based mountain silhouettes scrolling at different parallax speeds (far 15%, near 35%)
+- 🌿 **Animated Ground Layer**: Swaying grass blades, moving detail lines, and depth striping replacing old static ground
+- 💡 **Additive Blending (Neon Glow)**: Cyberpunk/Glitch/Rainbow themes use `globalCompositeOperation = 'lighter'` for neon glow on all game objects
+- 🎀 **Player Ribbon Trail**: 15-point position history drawn as fading polyline behind the player, with neon glow on cyberpunk/glitch
+- 💫 **Projectile Energy Trail**: Outer glow ring + 3 fading energy circles behind each projectile with additive blending
+- 🔲 **Obstacle Neon Glow**: Outer neon glow rect + animating energy scan line on obstacles for cyberpunk/glitch themes
+- 🦇 **Aerial Enemy Living Geometry**: Sinusoidal Y-axis bobbing with per-instance random speed/amplitude, pulsating aura, and energy ring effects
+- 💀 **Trap Obstacle VFX**: Bobbing Y motion, pulsating outer glow rings, and rotating inner elements
+- 🐉 **Boss Attack VFX**: Laser outer glow + bright core; projectile outer glow + hot center; additive blending on dark themes
+- 📳 **Screen Shake System**: Camera shake with decaying intensity triggered on death (12), projectile kills (6), trap hits (5), shield blocks (4), boss kills (15)
+- ⏸️ **Hit-Stop System**: 4-frame physics freeze on projectile obstacle destruction while rendering continues — classic "game feel" technique
+- 🌈 **Chromatic Aberration**: Red/cyan color offset post-processing — persistent on Glitch theme, burst on death and boss hit
+- 🌧️ **Rain Ground Splash**: Rain particles spawn 3 tiny upward-bouncing splash particles on ground impact
+- ⛈️ **Storm Neon Rain**: Additive blending on rain during storms for cyberpunk/glitch/dark themes
+- 🖼️ **Enhanced Border**: Decorative corner brackets with glitch wobble effect
+- 🔧 **BackgroundManager Class**: New dedicated class managing all parallax layers, scrolling, and procedural generation
+- 🔧 **FXManager System**: New system for screen shake, hit-stop, and chromatic aberration with full reset support
+- 🎮 **Zero External Assets**: All visuals are 100% procedural using Canvas API — no images, no sprites, no external files
+
+### v11.1 - "Enhanced Event Experience"
+- ⏰ **3-Second Countdown Warning**: Big countdown timer (3...2...1...) displays before screen events trigger
+- ⚠️ **Visual Warning System**: Red warning box with gold border appears center-screen
+- 🎭 **Dramatic Animation**: Each countdown number pulses and scales for impact
+- 🎯 **Better Player Preparation**: Players now have time to anticipate and prepare for events
+- 🔧 **Fixed Z-Index Overlap**: Mission completion notifications now always appear above screen effects
+- 📊 **Improved Notification Hierarchy**: Event notifications z-index increased to 150 (was 12)
+- ✨ **Smooth Countdown Animation**: CSS keyframe animation with scale and opacity effects
+- 🎮 **Enhanced UX**: Critical feedback (mission complete) no longer hidden by visual effects
+- 💯 **Better Visibility**: Countdown warning has highest z-index (200) for maximum visibility
+
+### v11.0 - "Advanced Events & Missions"
+- 🌑 **Screen Events System**: Two new visual challenge events for players above 50 points
+- ⚡ **The Dark Descends**: Gradual screen darkening to 10% brightness with smooth recovery
+- 💥 **Flashbang**: Instant white flash for 1.5 seconds followed by fade-out recovery
+- ⏱️ **Global Cooldown**: 60-second shared cooldown system prevents event spam
+- ✅ **Mission Failure System**: Missions can now fail with real-time validation
+- 🎯 **Smart Validation**: "No Double Jump" mission fails if used before reaching 20 points
+- ❌ **Visual Feedback**: Failed missions display with ✗ symbol and gray strikethrough
+- 🔄 **Continuous Monitoring**: AI constantly checks all mission failure conditions
+- 📊 **Enhanced Challenge**: Screen events test player adaptation without unfairness
+- 🎮 **Balanced Difficulty**: Post-50 activation ensures players are ready for challenges
+
+### v10.4 - "Loading Screen & Optimization"
+- ⏳ **Loading Screen**: Beautiful animated loading screen with progress bar on game startup
+- 🎨 **Visual Effects**: Floating particles, rotating spinners, and gradient animations
+- 💡 **Loading Tips**: Dynamic tip system displaying helpful game information
+- ⚡ **Performance-Aware**: Loading system adapts to device capabilities for optimal experience
+-  **Multi-Stage Loading**: Progress tracking through Assets, Engine, Sound, Graphics, and World initialization
+- ✨ **Smooth Animations**: Polished fade-out effect when loading completes
+- 🎯 **Optimized Initialization**: Enhanced game startup for better performance
+- 🔧 **UI Fixes**: Properly centered loading bar with margin alignment
+
+### v10.3 - "Performance & Optimization"
 - ⚡ **FPS Optimization**: Major performance improvements throughout the game for smoother gameplay
 - 🎯 **FPS Selector**: Added FPS control in Settings menu (30, 60, 90, 120, Unlimited)
 - 🎮 **Optimized Game Loop**: Delta time tracking for consistent frame pacing
@@ -397,6 +561,17 @@ Web_App_Testing/
 - [x] Theme-specific flying objects
 - [x] Event warnings (Giant/Tiny modes)
 - [x] Scrollable style menu
+- [x] 3-layer procedural parallax backgrounds
+- [x] Screen shake on collisions and kills
+- [x] Hit-stop on projectile obstacle destruction
+- [x] Chromatic aberration post-processing
+- [x] Player ribbon trail with neon glow
+- [x] Additive blending for cyberpunk/glitch themes
+- [x] Living geometry (sinusoidal bobbing) for aerial enemies
+- [x] Rain ground splash particles
+- [x] Boss attack VFX with additive glow
+- [x] 100% procedural rendering (zero external assets)
+- [x] 12 style-specific procedural renderers (Strategy pattern — all themes)
 
 ---
 
@@ -468,17 +643,17 @@ This is a personal project created for educational and entertainment purposes.
 **Game Design & Development**: Solo project  
 **Engine**: Vanilla HTML5/JavaScript  
 **Inspiration**: Classic Flash arcade games (Flappy Bird, Chrome Dino)  
-**Version**: 10.3 "Performance & Optimization"  
-**Last Updated**: 2025
+**Version**: 13.0 "Style-Specific Procedural Generation"  
+**Last Updated**: 2026
 
 ---
 
 ## 🔗 Quick Links
 
 - **Game File**: `arcade_game.html`
-- **Current Version**: 10.3
-- **Total Versions**: 19 major releases
-- **Lines of Code**: 4700+
+- **Current Version**: 13.0
+- **Total Versions**: 22 major releases
+- **Lines of Code**: 9400+
 - **Development Time**: Multiple iterations
 
 ---
